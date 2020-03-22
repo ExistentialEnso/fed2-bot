@@ -68,7 +68,7 @@ async function run() {
     try {
         await connection.connect(params)
     } catch(error) {
-        console.log("ERROR! Could not connect to Fed2.")
+        console.log(chalk.red("ERROR! Could not connect to Fed2."))
         process.exit(0)
     }
 
