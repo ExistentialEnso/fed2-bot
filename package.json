@@ -1,0 +1,19 @@
+{
+  "name": "fed-bot",
+  "version": "1.0.0",
+  "description": "A bot for Fed2",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thorne N. Melcher <thorne@crowdmed.com>",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "telnet-client": "^1.2.11"
+  }
+}
