@@ -18,16 +18,12 @@ const SLEEP_MINUTES = 15
 // How low should stamina go before we buy food?
 const STAMINA_MIN = 25
 
-// Useful regexes for pulling out data
+// Useful regexes for pulling out data from game output
 let commodRegex = new RegExp("([A-Z,a-z]*): value ([0-9]*)ig/ton  Spread: ([0-9]*)%   Stock: current ([-0-9]*)")
 let staminaRegex = new RegExp("Stamina      max:  ([0-9]*) current:  ([0-9]*)")
 let bankBalanceRegex = new RegExp("([0-9,\,]*)ig")
 let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 let currentPlanetRegex = new RegExp("You are currently on ([A-Z,a-z,0-9]*) in the")
-
-// Saved info
-let lastBankBalance = 0
-let cargoBays = 0
 
 // Import our planet and step configuration
 const planets = require("./planets")
@@ -35,6 +31,10 @@ const steps = require("./steps")
 
 // Holds our Telnet connection into the Fed2 server
 const connection = new Telnet()
+
+// Info we want to track as we go along
+let lastBankBalance = 0
+let cargoBays = 0
 
 /**
 * Easily lets us wait for a specified period of time with await
@@ -92,6 +92,9 @@ async function run() {
     }
 }
 
+/**
+ * Ensure the steps.js file doesn't have obvious errors
+ */
 function validateSteps() {
     let startingPlanet = steps[0].from
     let previousEndsAt = "NONE"
@@ -136,6 +139,9 @@ function validateSteps() {
     }
 }
 
+/**
+ * Ensure the planets.js file doesn't have obvious errors
+ */
 function validatePlanets() {
     // Innocent until proven guilty
     let valid = true
@@ -181,6 +187,9 @@ function validatePlanets() {
     }
 }
 
+/**
+ * Determine how many cargo bays the player's ship has
+ */
 async function calculateCargoBays() {
     let status = await connection.send("st")
 
@@ -191,7 +200,7 @@ async function calculateCargoBays() {
     // Save this info for use elsewhere
     cargoBays = Math.trunc(tonnage/75)
 
-    console.log(`Your ship has ${cargoBays} cargo bays. 📦`);
+    console.log(`Your ship has ${cargoBays} cargo bays. 📦`)
 }
 
 /**
@@ -221,6 +230,11 @@ async function checkBankBalance() {
     return parseInt(balance)
 }
 
+/**
+ * Ensures the player is on this planet at its exchange
+ * 
+ * @param {String} planet 
+ */
 async function verifyAtPlanetExchange(planet) {
     let score = await connection.send("sc")
 
@@ -256,6 +270,8 @@ async function runCycle() {
 
 /**
  * Runs a single of the steps defined in steps.js
+ * 
+ * @param {Object} step 
  */
 async function runStep(step) {
     if(step.type === "TRADE") {
@@ -357,6 +373,11 @@ async function tradeBetween(planetA, planetB) {
     }
 }
 
+/**
+ * Ensure the player is staying well-fed
+ * 
+ * @param {String} planet The planet the player is currently on
+ */
 async function checkStamina(planet) {
     let score = await connection.send("sc")
     let match = staminaRegex.exec(score)
@@ -399,6 +420,9 @@ async function checkStamina(planet) {
 
 /**
  * Navigates from the exchange on one planet to another
+ * 
+ * @param {String} from 
+ * @param {String} to 
  */
 async function navigate(from, to) {
     console.log(chalk.blue("Moving from " + from + " to " + to + ". ") + "🚀")
@@ -428,9 +452,11 @@ async function navigate(from, to) {
     }
 }
 
-/**
- * Fills our cargo bay with the specified commodity
- */
+ /**
+  * Fills our cargo bay with the specified commodity
+  * 
+  * @param {String} commod 
+  */
 async function buyCommod(commod) {
     lastBankBalance = await checkBankBalance()
 
@@ -443,6 +469,8 @@ async function buyCommod(commod) {
 
 /**
  * Sells off all of the commodity we are hauling
+ * 
+ * @param {String} commod 
  */
 async function sellCommod(commod) {
     console.log("Selling " + cargoBays + " bays of " + outputCommod(commod))
