@@ -14,6 +14,8 @@ Cross-platform on anything that can run Node.js (including Windows, macOS, and L
 
 🧪 Validates configuration and tells you any problems found.
 
+📒 Logs useful information automatically.
+
 😍 Detailed output (with cute emoji!)
 
 ## Setup
