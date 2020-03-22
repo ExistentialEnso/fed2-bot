@@ -16,7 +16,7 @@ Built for the MUD [Federation II](https://federation2.com), this is a bot that h
 
 ## Setup
 
-If you don't have them already, install Node.js & npm. There are plenty of guides online on how to do this.
+If you don't have them already, install Node.js & npm. There are plenty of guides online on how to do this. You will need a terminal open to the directory where you have cloned or downloaded this repository.
 
 Next, install the dependencies with ```npm install``` (or ```yarn install``` if you prefer yarn like me).
 
@@ -29,12 +29,13 @@ Now, finally, you can run the bot by typing ```npm start```.
 
 ## Notes
 
-* Your character **must** be in the exchange of the first step's planet when beginning the bot
-* Step type must be one of: MOVE, TRADE, WALK_UP
-* MOVE and TRADE steps require the following fields: type, to, from
-* Steps with type TRADE put you back on the "from" planet at the end, so the next step should have the same "from" value
-* The last step should put you back on the planet where you started
-* All planet data requires the following fields: toExchange, fromExchange, toLink, fromLink
+* Your character needs to be in the exchange of the first step's planet when beginning the bot
+* Steps must have a type, which must be one of: MOVE, TRADE, WALK_UP
+* MOVE and TRADE steps require the following planet names: to, from
+* TRADE steps are two way: if the "to" planet has surpluses that are deficits on the "from" planet, they are hauled
+* TRADE steps put you back on the "from" planet when they finish
+* The last step should ensure you back on the planet where you started
+* All planet data requires the following arrays: toExchange, fromExchange, toLink, fromLink
 * If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```
 * You must define restaurant info for at least one planet to replenish stamina
 
