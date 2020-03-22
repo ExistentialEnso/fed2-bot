@@ -88,15 +88,21 @@ function validateSteps() {
     let startingPlanet = steps[0].from
     let previousEndsAt = "NONE"
 
+    let valid = true
+
     for(let step of steps) {
         if(!step.from || !step.to || step.planet) {
-            console.log(chalk.red("ERROR! Step missing required field(s): " + JSON.stringify(step)))
-            process.exit(0)
+            console.log(chalk.red("ERROR! This step is missing required field(s): " + JSON.stringify(step)))
+            valid = false
+        }
+
+        if(step.from === step.to) {
+            console.log(chalk.red("ERROR! A step can't have the same from & to values: " + JSON.stringify(step)))
         }
 
         if(previousEndsAt !== "NONE" && previousEndsAt !== step.from) {
             console.log(chalk.red("ERROR! Previous step ended at a different planet: " + JSON.stringify(step)))
-            process.exit(0)
+            valid = false
         }
 
         if(step.type === "TRADE") {
@@ -108,6 +114,11 @@ function validateSteps() {
 
     if(startingPlanet !== previousEndsAt) {
         console.log(chalk.red("ERROR! The last step does not put you back on the starting planet."))
+        valid = false
+    }
+
+    if(!valid) {
+        console.log(chalk.bold.red("Please fix your step data and run again."))
         process.exit(0)
     }
 }
@@ -123,22 +134,22 @@ function validatePlanets() {
         const planetData = planets[planet]
 
         if(!planetData.toExchange) {
-            console.log(chalk.red(`No path to exchange provided for planet ${planet}.`))
+            console.log(chalk.red(`ERROR! No path to exchange provided for planet ${planet}.`))
             valid = false
         }
 
         if(!planetData.fromExchange) {
-            console.log(chalk.red(`No path from exchange provided for planet ${planet}.`))
+            console.log(chalk.red(`ERROR! No path from exchange provided for planet ${planet}.`))
             valid = false
         }
 
         if(!planetData.toLink) {
-            console.log(chalk.red(`No path to link provided for planet ${planet}.`))
+            console.log(chalk.red(`ERROR! No path to link provided for planet ${planet}.`))
             valid = false
         }
 
         if(!planetData.fromLink) {
-            console.log(chalk.red(`No path from link provided for planet ${planet}.`))
+            console.log(chalk.red(`ERROR! No path from link provided for planet ${planet}.`))
             valid = false
         }
 
@@ -151,8 +162,10 @@ function validatePlanets() {
         valid = false
     }
 
-    if(!valid)
+    if(!valid) {
+        console.log(chalk.bold.red("Please fix your planet data and run again."))
         process.exit(0)
+    }
 }
 
 /**
