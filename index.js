@@ -44,6 +44,7 @@ const connection = new Telnet()
 // Info we want to track as we go along
 let lastBankBalance = 0
 let cargoBays = 0
+let cycleNum = 1
 
 /**
 * Easily lets us wait for a specified period of time with await
@@ -168,6 +169,8 @@ async function verifyAtPlanetExchange(planet) {
  * Run a single cycle of our hauling steps defined in steps.js
  */
 async function runCycle() {
+    console.log(`Cycle #${cycleNum} starting.`)
+
     let startingPlanet = steps[0].from
     
     await verifyAtPlanetExchange(startingPlanet)
@@ -176,7 +179,8 @@ async function runCycle() {
         await runStep(step)
     }
 
-    console.log("All steps complete!")
+    console.log(`Cycle #${cycleNum} finished all steps.`)
+    cycleNum++
 }
 
 /**
