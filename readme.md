@@ -36,7 +36,7 @@ Now, finally, you can run the bot by typing ```npm start```.
 * MOVE and TRADE steps require the following planet names: to, from
 * TRADE steps are two way: if the "to" planet has surpluses that are deficits on the "from" planet, they are hauled
 * TRADE steps put you back on the "from" planet when they finish
-* The last step should ensure you are back on the planet where you started
+* The last step should ensure you are back on the planet where the first step starts
 * All planet data requires the following arrays: toExchange, fromExchange, toLink, fromLink
 * If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```
 * You must define restaurant info for at least one planet to replenish stamina
