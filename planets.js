@@ -10,8 +10,9 @@ const planets = {
         toExchange: ["n"],
         fromExchange: ["s"],
 
-        toLink: ["l"],
-        fromLink: ["l"],
+        // Sakura's orbit is the same as the link
+        toLink: [],
+        fromLink: [],
 
         toRestaurant: ["n", "e"],
         fromRestaurant: ["w", "s"]

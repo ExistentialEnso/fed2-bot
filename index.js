@@ -60,6 +60,12 @@ async function run() {
         console.log(error)
     }
 
+    console.log("Validating steps data for errors.")
+    validateSteps(steps)
+
+    console.log("Validating planets data for errors.")
+    validatePlanets(planets)
+
     console.log("Connected to Federation 2!")
 
     // Authenticate the user
@@ -76,6 +82,77 @@ async function run() {
         // Sleep until we need to repeat the cycle again
         await sleep(1000 * 60 * SLEEP_MINUTES)
     }
+}
+
+function validateSteps() {
+    let startingPlanet = steps[0].from
+    let previousEndsAt = "NONE"
+
+    for(let step of steps) {
+        if(!step.from || !step.to || step.planet) {
+            console.log(chalk.red("ERROR! Step missing required field(s): " + JSON.stringify(step)))
+            process.exit(0)
+        }
+
+        if(previousEndsAt !== "NONE" && previousEndsAt !== step.from) {
+            console.log(chalk.red("ERROR! Previous step ended at a different planet: " + JSON.stringify(step)))
+            process.exit(0)
+        }
+
+        if(step.type === "TRADE") {
+            previousEndsAt = step.from
+        } else {
+            previousEndsAt = step.to
+        }
+    }
+
+    if(startingPlanet !== previousEndsAt) {
+        console.log(chalk.red("ERROR! The last step does not put you back on the starting planet."))
+        process.exit(0)
+    }
+}
+
+function validatePlanets() {
+    // Innocent until proven guilty
+    let valid = true
+
+    // Make sure at least one planet has a restaurant
+    let foundRestaurant = false
+
+    for(let planet in planets) {
+        const planetData = planets[planet]
+
+        if(!planetData.toExchange) {
+            console.log(chalk.red(`No path to exchange provided for planet ${planet}.`))
+            valid = false
+        }
+
+        if(!planetData.fromExchange) {
+            console.log(chalk.red(`No path from exchange provided for planet ${planet}.`))
+            valid = false
+        }
+
+        if(!planetData.toLink) {
+            console.log(chalk.red(`No path to link provided for planet ${planet}.`))
+            valid = false
+        }
+
+        if(!planetData.fromLink) {
+            console.log(chalk.red(`No path from link provided for planet ${planet}.`))
+            valid = false
+        }
+
+        if(planetData.toRestaurant)
+            foundRestaurant = true
+    }
+
+    if(!foundRestaurant) {
+        console.log(chalk.red("No planets have restaurants defined. Need at least one restaurant."))
+        valid = false
+    }
+
+    if(!valid)
+        process.exit(0)
 }
 
 /**
