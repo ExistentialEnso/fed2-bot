@@ -230,15 +230,15 @@ async function tradeBetween(planetA, planetB) {
     let routesBtoA = _.intersection(planetBImpEx.exp, planetAImpEx.imp)
 
     if(routesAtoB.length > 0) {
-        console.log(`Routes from ${planetA} to ${planetB} (${routesAtoB.length}): ${routesAtoB.join(", ")}`)
+        console.log(`Routes from ${planetA} => ${planetB} (${routesAtoB.length}): ${routesAtoB.join(", ")}`)
     } else {
-        console.log(`No available routes from ${planetA} to ${planetB}`)
+        console.log(`No available routes from ${planetA} => ${planetB}`)
     }
 
     if(routesBtoA.length > 0) {
-        console.log(`Routes from ${planetB} to ${planetA} (${routesBtoA.length}): ${routesBtoA.join(", ")}`)
+        console.log(`Routes from ${planetB} => ${planetA} (${routesBtoA.length}): ${routesBtoA.join(", ")}`)
     } else {
-        console.log(`No available routes from ${planetB} to ${planetA}`)
+        console.log(`No available routes from ${planetB} => ${planetA}`)
     }
 
     await navigate(planetB, planetA)
