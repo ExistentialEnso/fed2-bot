@@ -18,13 +18,14 @@ const SURPLUS_MIN = 19000
 const SLEEP_MINUTES = 15
 
 // How low should stamina go before we buy food?
-const STAMINA_MIN = 99
+const STAMINA_MIN = 25
 
 // Useful regexes for pulling out data
 let commodRegex = new RegExp("([A-Z,a-z]*): value ([0-9]*)ig/ton  Spread: ([0-9]*)%   Stock: current ([-0-9]*)")
 let staminaRegex = new RegExp("Stamina      max:  ([0-9]*) current:  ([0-9]*)")
 let bankBalanceRegex = new RegExp("Bank Balance: ([0-9,\,]*)ig")
 let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
+let currentPlanetRegex = new RegExp("You are currently on ([A-Z,a-z,0-9]*) in the")
 
 let lastBankBalance = 0
 
@@ -67,18 +68,6 @@ async function run() {
 
     await sleep(2000)
 
-    let res = await connection.send("l")
-
-    if(res.indexOf('Sakura Shuttle') > -1) {
-        console.log("Started on Sakura Shuttle Hangar.")
-
-        await connection.send("n")
-    } else if(res.indexOf('Exchange Floor') == -1) {
-        console.log("You're not in a valid starting location.")
-        console.log("Ending session.")
-        return
-    }
-
     while(true) {
         await runCycle(connection)
 
@@ -117,10 +106,32 @@ async function checkBankBalance(connection) {
     return parseInt(balance)
 }
 
+async function verifyAtPlanetExchange(connection, planet) {
+    let score = await connection.send("sc")
+
+    let match = currentPlanetRegex.exec(score)
+
+    if(match[1] !== planet) {
+        console.log(chalk.red(`You're not on the right starting planet, ${planet}. Cannot run.`));
+        process.exit(0)
+    }
+
+    let priceTest = await connection.send("c price arts")
+
+    if(priceTest.indexOf("need to be in an exchange") > -1) {
+        console.log(chalk.red(`You're not at ${planet}'s exchange. Cannot run.`));
+        process.exit(0)
+    }
+}
+
 /**
- * Run a single cycle of our hauling
+ * Run a single cycle of our hauling steps defined in steps.js
  */
 async function runCycle(connection) {
+    let startingPlanet = steps[0].from
+    
+    await verifyAtPlanetExchange(connection, startingPlanet)
+
     for(let step of steps) {
         await runStep(connection, step)
     }
@@ -203,7 +214,7 @@ async function tradeBetween(connection, planetA, planetB) {
     }
 
     if(routesBtoA.length > 0) {
-        console.log(`Still have routes from ${planetB} to ${planetA}.`)
+        console.log(`No ${planetB} => ${planetA} routes left.`)
 
         while(routesBtoA.length > 0) {
             navigate(connection, planetA, planetB)
@@ -249,7 +260,7 @@ async function checkStamina(connection, planet) {
 
             await connection.send("buy food")
 
-            console.log("Food purchased! Itadakimasu!")
+            console.log("Food purchased. Itadakimasu!")
 
             for(let cmd of planetInfo.fromRestaurant) {
                 await connection.send(cmd)
