@@ -17,6 +17,9 @@ const SURPLUS_MIN = 19000
 // How many minutes to sleep between each cycle?
 const SLEEP_MINUTES = 15
 
+// How low should stamina go before we buy food?
+const STAMINA_MIN = 99
+
 // Useful regexes for pulling out data
 let commodRegex = new RegExp("([A-Z,a-z]*): value ([0-9]*)ig/ton  Spread: ([0-9]*)%   Stock: current ([-0-9]*)")
 let staminaRegex = new RegExp("Stamina      max:  ([0-9]*) current:  ([0-9]*)")
@@ -37,6 +40,9 @@ function sleep(ms) {
     })
 }   
 
+/**
+ * The main function that starts up everything else
+ */
 async function run() {
     const connection = new Telnet()
 
@@ -115,26 +121,6 @@ async function checkBankBalance(connection) {
  * Run a single cycle of our hauling
  */
 async function runCycle(connection) {
-    let score = await connection.send("sc")
-    let match = staminaRegex.exec(score)
-    if(!match) {
-        console.log(chalk.red("Can't get stamina info."))
-        console.log("Ending session for safety reasons.")
-        return
-    } else {
-        console.log("Current stamina: " + chalk.bold.white(match[2]))
-        
-        let stam = parseInt(match[2])
-
-        if(stam < 30) {
-            console.log(chalk.red("Stamina less than 30. Buying food from the Meditation Tea Bar."))
-
-            await connection.send("e")
-            await connection.send("buy food")
-            await connection.send("w")
-        }
-    }
-
     for(let step of steps) {
         await runStep(connection, step)
     }
@@ -163,6 +149,11 @@ async function runStep(connection, step) {
  * @param {String} planetB Name of the second plent
  */
 async function tradeBetween(connection, planetA, planetB) {
+    // If planet A has a restaurant defined, we should check our stamina
+    if(planets[planetA].toRestaurant) {
+        await checkStamina(connection, planetA)
+    }
+
     console.log(chalk.green(`Running routes ${planetA} <=> ${planetB}.`))
 
     await connection.send("buy fuel")
@@ -230,6 +221,47 @@ async function tradeBetween(connection, planetA, planetB) {
     }
 }
 
+async function checkStamina(connection, planet) {
+    let score = await connection.send("sc")
+    let match = staminaRegex.exec(score)
+
+    if(!match) {
+        console.log(chalk.red("Unable to get stamina info."))
+        console.log("Ending session for safety reasons.")
+        process.exit(0)
+    } else {
+        console.log("Current stamina: " + chalk.bold.white(match[2]))
+        
+        let stamina = parseInt(match[2])
+
+        if(stamina < STAMINA_MIN) {
+            console.log(chalk.red(`Stamina less than ${STAMINA_MIN}. Buying food from the planet's restaurant.`))
+
+            const planetInfo = planets[planet]
+
+            for(let cmd of planetInfo.fromExchange) {
+                await connection.send(cmd)
+            }
+
+            for(let cmd of planetInfo.toRestaurant) {
+                await connection.send(cmd)
+            }
+
+            await connection.send("buy food")
+
+            console.log("Food purchased! Itadakimasu!")
+
+            for(let cmd of planetInfo.fromRestaurant) {
+                await connection.send(cmd)
+            }
+
+            for(let cmd of planetInfo.toExchange) {
+                await connection.send(cmd)
+            }
+        }
+    }
+}
+
 /**
  * Navigates from the exchange on one planet to another
  */
@@ -239,12 +271,26 @@ async function navigate(connection, from, to) {
     let fromPlanet = planets[from]
     let toPlanet = planets[to]
 
-    await connection.send(fromPlanet.fromExchange)
+    // Go from exchange => landing pad
+    for(let cmd of fromPlanet.fromExchange) {
+        await connection.send(cmd)
+    }
+
     await connection.send("board")
-    await connection.send(fromPlanet.toLink)
-    await connection.send(toPlanet.fromLink)
+    
+    for(let cmd of fromPlanet.toLink) {
+        await connection.send(cmd)
+    }
+
+    for(let cmd of toPlanet.fromLink) {
+        await connection.send(cmd)
+    }
+
     await connection.send("board")
-    await connection.send(toPlanet.toExchange)
+    
+    for(let cmd of toPlanet.toExchange) {
+        await connection.send(cmd)
+    }
 }
 
 async function buyCommod(connection, commod) {

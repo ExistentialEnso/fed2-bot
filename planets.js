@@ -6,23 +6,36 @@
 const planets = {
     Sakura: {
         system: "Enso",
-        toExchange: "n",
-        fromExchange: "s",
-        toLink: "l"
+
+        toExchange: ["n"],
+        fromExchange: ["s"],
+
+        toLink: ["l"],
+        fromLink: ["l"],
+
+        toRestaurant: ["n", "e"],
+        fromRestaurant: ["w", "s"]
     },
     Phoenix: {
         system: "Enso",
-        toExchange: "n",
-        fromExchange: "s",
-        toLink: "n",
-        fromLink: "s"
+
+        toExchange: ["n"],
+        fromExchange: ["s"],
+
+        toLink: ["n"],
+        fromLink: ["s"],
+
+        toRestaurant: ["e"],
+        fromRestaurant: ["w"]
     },
     Zen: {
         system: "Enso",
-        toExchange: "s",
-        fromExchange: "n",
-        toLink: "nw",
-        fromLink: "se"
+
+        toExchange: ["s"],
+        fromExchange: ["n"],
+
+        toLink: ["nw"],
+        fromLink: ["se"]
     }
 }
 

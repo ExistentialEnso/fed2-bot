@@ -22,6 +22,11 @@ const steps = [
         type: "TRADE",
         from: "Phoenix",
         to: "Zen"
+    },
+    {
+        type: "MOVE",
+        from: "Phoenix",
+        to: "Sakura"
     }
 ]
 
