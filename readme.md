@@ -1,6 +1,8 @@
 # Thorne's Fed2 Bot
 
-Built for the MUD [Federation II](https://federation2.com), this is a bot that hauls commodities between planets belonging to a planet owner. Cross-platform on anything that can run Node.js (including Windows, macOS, and Linux.)
+Built for the MUD [Federation II](https://federation2.com), this is a bot that automates useful tasks for planet owners.
+
+Cross-platform on anything that can run Node.js (including Windows, macOS, and Linux.)
 
 ## Features
 
