@@ -6,9 +6,11 @@ Cross-platform on anything that can run Node.js (including Windows, macOS, and L
 
 ## Features
 
-🍕 Ensures your character eats when stamina is low to avoid death by starvation
+🔍 Can scan planets you own to find ideal trade routes between them automatically
 
-📈 Able to "walk up" new exchanges, i.e. slowly increasing stockpiles to 20k tons over time
+📈 Can "walk up" new exchanges, i.e. slowly increasing stockpiles to 20k tons over time
+
+🍕 Ensures your character eats when stamina is low to avoid death by starvation
 
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
 
