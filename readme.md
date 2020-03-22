@@ -2,6 +2,9 @@
 
 Built for the MUD [Federation II](https://federation2.com), this is a bot that hauls commodities between planets belonging to a planet owner. Cross-platform on anything that can run Node.js (including Windows, macOS, and Linux.)
 
+The bot will ensure that stamina is topped off as necessary, so your character does not die of starvation and does a number of things to validate both the 
+configuration you provide it and that the game state is what it expects.
+
 ## Setup
 
 This assumes you already have Node setup on your machine. If not, plenty of guides already exist for that task.
