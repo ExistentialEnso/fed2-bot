@@ -72,7 +72,7 @@ async function run() {
 
     await sleep(2000)
 
-    console.log("Bot is starting. BEEP-BOOP! 🤖")
+    console.log("🤖Bot is powering up. BEEP-BOOP! 🤖")
 
     await calculateCargoBays(connection)
 
@@ -324,8 +324,6 @@ async function tradeBetween(connection, planetA, planetB) {
     }
 
     if(routesBtoA.length > 0) {
-        console.log(`No ${planetB} => ${planetA} routes left.`)
-
         while(routesBtoA.length > 0) {
             navigate(connection, planetA, planetB)
 
@@ -347,8 +345,7 @@ async function checkStamina(connection, planet) {
     let match = staminaRegex.exec(score)
 
     if(!match) {
-        console.log(chalk.red("Unable to get stamina info."))
-        console.log("Ending session for safety reasons.")
+        console.log(chalk.red("ERROR! Unable to get stamina info."))
         process.exit(0)
     } else {
         console.log("Current stamina: " + chalk.bold.white(match[2]))
@@ -370,7 +367,7 @@ async function checkStamina(connection, planet) {
 
             await connection.send("buy food")
 
-            console.log("Food purchased. Itadakimasu!")
+            console.log("Food purchased. Itadakimasu! 🍕")
 
             for(let cmd of planetInfo.fromRestaurant) {
                 await connection.send(cmd)
@@ -387,7 +384,7 @@ async function checkStamina(connection, planet) {
  * Navigates from the exchange on one planet to another
  */
 async function navigate(connection, from, to) {
-    console.log(chalk.blue("Moving from " + from + " to " + to + "."))
+    console.log(chalk.blue("Moving from " + from + " to " + to + ". ") + "🚀")
 
     let fromPlanet = planets[from]
     let toPlanet = planets[to]
@@ -434,7 +431,7 @@ async function sellCommod(connection, commod) {
     const newBankBalance = await checkBankBalance(connection)
     const profit = newBankBalance - lastBankBalance
 
-    console.log(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale.`)
+    console.log(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale. 🤑`)
 
     // Ensure everything sold properly
     await checkCargoHold(connection)
