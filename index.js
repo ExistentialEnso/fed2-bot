@@ -5,9 +5,6 @@ const chalk = require('chalk')
 // Load in our .env file
 require('dotenv').config()
 
-// How many cargo bays are in your ship?
-const CARGO_BAYS = 12
-
 // What is the cutoff to determine deficits?
 const DEFICIT_MAX = -500
 
@@ -28,6 +25,7 @@ let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 let currentPlanetRegex = new RegExp("You are currently on ([A-Z,a-z,0-9]*) in the")
 
 let lastBankBalance = 0
+let cargoBays = 0
 
 const planets = require("./planets")
 const steps = require("./steps")
@@ -66,13 +64,17 @@ async function run() {
     console.log("Validating planets data for errors.")
     validatePlanets(planets)
 
-    console.log("Connected to Federation 2!")
+    console.log("Connecting to Federation 2 servers...")
 
     // Authenticate the user
     await connection.send(process.env.FED_USERNAME)
     await connection.send(process.env.FED_PASSWORD)
 
     await sleep(2000)
+
+    console.log("Bot is starting. BEEP-BOOP! 🤖")
+
+    await calculateCargoBays(connection)
 
     while(true) {
         await runCycle(connection)
@@ -173,6 +175,19 @@ function validatePlanets() {
     }
 }
 
+async function calculateCargoBays(connection) {
+    let status = await connection.send("st")
+
+    let match = cargoSpaceRegex.exec(status)
+
+    let tonnage = parseInt(match[2])
+
+    // Save this info for use elsewhere
+    cargoBays = Math.trunc(tonnage/75)
+
+    console.log(`Your ship has ${cargoBays} cargo bays (${tonnage} tons).`);
+}
+
 /**
  * Ensure we don't have anything in our cargo hold
  */
@@ -182,7 +197,7 @@ async function checkCargoHold(connection) {
     let match = cargoSpaceRegex.exec(status)
 
     if(match[1] !== match[2]) {
-        console.log(chalk.red("Cargo detected in hold."))
+        console.log(chalk.red("ERROR! Cargo detected in hold."))
 
         process.exit(0)
     }
@@ -402,17 +417,17 @@ async function navigate(connection, from, to) {
 async function buyCommod(connection, commod) {
     lastBankBalance = await checkBankBalance(connection)
 
-    console.log("Buying " + CARGO_BAYS + " bays of " + commod + ".")
+    console.log("Buying " + cargoBays + " bays of " + commod + ".")
 
-    for(i = 0; i < CARGO_BAYS; i++) {
+    for(i = 0; i < cargoBays; i++) {
         await connection.send("buy " + commod)
     }
 }
 
 async function sellCommod(connection, commod) {
-    console.log("Selling " + CARGO_BAYS + " bays of " + commod + ".")
+    console.log("Selling " + cargoBays + " bays of " + commod + ".")
 
-    for(i = 0; i < CARGO_BAYS; i++) {
+    for(i = 0; i < cargoBays; i++) {
         await connection.send("sell " + commod)
     }
 
