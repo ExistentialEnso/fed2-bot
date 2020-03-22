@@ -1,6 +1,7 @@
 const Telnet = require('telnet-client')
 const _ = require('lodash')
 const chalk = require('chalk')
+const emojiMap = require('./emojiMap')
 
 // Load in our .env file
 require('dotenv').config()
@@ -429,7 +430,7 @@ async function navigate(connection, from, to) {
 async function buyCommod(connection, commod) {
     lastBankBalance = await checkBankBalance(connection)
 
-    console.log("Buying " + cargoBays + " bays of " + commod + ".")
+    console.log("Buying " + cargoBays + " bays of " + outputCommod(commod) + ".")
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("buy " + commod)
@@ -437,7 +438,7 @@ async function buyCommod(connection, commod) {
 }
 
 async function sellCommod(connection, commod) {
-    console.log("Selling " + cargoBays + " bays of " + commod + ".")
+    console.log("Selling " + cargoBays + " bays of " + outputCommod(commod) + ".")
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("sell " + commod)
@@ -450,6 +451,14 @@ async function sellCommod(connection, commod) {
 
     // Ensure everything sold properly
     await checkCargoHold(connection)
+}
+
+function outputCommod(commod) {
+    if(emojiMap[commod]) {
+        return commod + " " + emojiMap[commod]
+    } else {
+        return commod
+    }
 }
 
 function parseExData(data) {
