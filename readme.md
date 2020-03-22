@@ -8,26 +8,26 @@ Built for the MUD [Federation II](https://federation2.com), this is a bot that h
 
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
 
-🧪 Validates configuration and outputs any problems instead of running.
+🧪 Validates configuration and outputs any problems found.
 
 😍 Detailed output (with cute emoji!)
 
 ## Setup
 
-This assumes you already have Node setup on your machine. If not, plenty of guides already exist for that task.
+If you don't have them already, install Node.js & npm. There are plenty of guides online on how to do this.
 
-Install the dependencies with ```npm install``` or ```yarn install```.
+Next, install the dependencies with ```npm install``` (or ```yarn install``` if you prefer yarn like me).
 
-Username and password data is loaded from a file named ```.env``` not present in the repository for security reasons. Either copy or rename ```template.env``` and edit it to contain your login information.
+Your username and password data is loaded from a file named ```.env``` not present in the repository for security reasons. Either copy or rename ```template.env``` and edit it to contain your login information.
 
-Planet information is defined in ```planets.js``` and steps are defined in ```steps.js```. I've included my personal configuration for the Enso system as an 
+Planet data is defined in ```planets.js``` and steps are defined in ```steps.js```. I've included my personal configuration for the Enso system as an 
 example to help understand how these files should be configured.
 
 Now, finally, you can run the bot by typing ```npm start```.
 
 ## Notes
 
-* Your character must be in the exchange of the first step's planet when beginning the bot
+* Your character **must** be in the exchange of the first step's planet when beginning the bot
 * All step data requires the following fields: type, to, from
 * Step type must be either "MOVE" or "TRADE"
 * Steps with type "TRADE" put you back on the "from" planet at the end, so the next step should have the same "from" value
