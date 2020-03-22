@@ -2,6 +2,7 @@ const Telnet = require('telnet-client')
 const _ = require('lodash')
 const chalk = require('chalk')
 
+// Load in our .env file
 require('dotenv').config()
 
 // How many cargo bays are in your ship?
@@ -15,12 +16,6 @@ const SURPLUS_MIN = 19000
 
 // How many minutes to sleep between each cycle?
 const SLEEP_MINUTES = 15
-
-// Load in account data from .env
-const account = {
-    username: process.env.FED_USERNAME,
-    password: process.env.FED_PASSWORD
-}
 
 // Useful regexes for pulling out data
 let commodRegex = new RegExp("([A-Z,a-z]*): value ([0-9]*)ig/ton  Spread: ([0-9]*)%   Stock: current ([-0-9]*)")
@@ -81,8 +76,8 @@ async function run() {
     console.log("Connected to Federation 2!")
 
     // Authenticate the user
-    await connection.send(account.username)
-    await connection.send(account.password)
+    await connection.send(process.env.FED_USERNAME)
+    await connection.send(process.env.FED_PASSWORD)
 
     await sleep(2000)
 
