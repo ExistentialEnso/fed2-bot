@@ -43,6 +43,13 @@ Now, finally, you can run the bot by typing ```npm start```.
 * If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```
 * You must define restaurant info for at least one planet to replenish stamina
 
+## Logging
+
+The bot automatically generates the following logs found in the ```logs``` folder:
+
+* ```balances.csv``` - Each cycle, this records your bank balance and the sum of your system's balances
+* ```output.txt``` - All terminal output is saved here (minus the color/bold effects)
+
 ## License
 
 MIT License

@@ -60,23 +60,23 @@ function sleep(ms) {
  * The main function that starts up everything else
  */
 async function run() {
-    console.log("Validating steps & planet data for errors...")
+    logger.output("Validating steps & planet data for errors...")
     const stepsValid = validator.validateSteps(steps)
     const planetValid = validator.validatePlanets(planets)
 
     if(!planetValid || !stepsValid) {
-        console.log(chalk.red("Please fix the errors with your configuration and run again."))
+        logger.output(chalk.red("Please fix the errors with your configuration and run again."))
         process.exit(0)
     }
 
-    console.log(chalk.green("No issues found!"))
+    logger.output(chalk.green("No issues found!"))
 
-    console.log("Connecting to Federation 2 servers...")
+    logger.output("Connecting to Federation 2 servers...")
 
     try {
         await connection.connect(connectionParams)
     } catch(error) {
-        console.log(chalk.red("ERROR! Could not connect to Fed2."))
+        logger.output(chalk.red("ERROR! Could not connect to Fed2."))
         process.exit(0)
     }
 
@@ -86,14 +86,14 @@ async function run() {
 
     await sleep(2000)
 
-    console.log("Bot is powering up. BEEP-BOOP! 🤖")
+    logger.output("Bot is powering up. BEEP-BOOP! 🤖")
 
     await calculateCargoBays()
 
     while(true) {
         await runCycle()
 
-        console.log(`Bot is sleeping for ${SLEEP_MINUTES} minutes. 😴`)
+        logger.output(`Bot is sleeping for ${SLEEP_MINUTES} minutes. 😴`)
 
         // Sleep until we need to repeat the cycle again
         await sleep(1000 * 60 * SLEEP_MINUTES)
@@ -113,7 +113,7 @@ async function calculateCargoBays() {
     // Save this info for use elsewhere
     cargoBays = Math.trunc(tonnage/75)
 
-    console.log(`Your ship has ${cargoBays} cargo bays. 📦`)
+    logger.output(`Your ship has ${cargoBays} cargo bays. 📦`)
 }
 
 /**
@@ -125,7 +125,7 @@ async function checkCargoHold() {
     let match = cargoSpaceRegex.exec(status)
 
     if(match[1] !== match[2]) {
-        console.log(chalk.red("ERROR! Cargo detected in hold."))
+        logger.output(chalk.red("ERROR! Cargo detected in hold."))
         process.exit(0)
     }
 }
@@ -154,14 +154,14 @@ async function verifyAtPlanetExchange(planet) {
     let match = currentPlanetRegex.exec(score)
 
     if(match[1] !== planet) {
-        console.log(chalk.red(`ERROR! You're not on the right starting planet, ${planet}. Cannot run.`));
+        logger.output(chalk.red(`ERROR! You're not on the right starting planet, ${planet}. Cannot run.`));
         process.exit(0)
     }
 
     let priceTest = await connection.send("c price arts")
 
     if(priceTest.indexOf("need to be in an exchange") > -1) {
-        console.log(chalk.red(`ERROR! You're not at ${planet}'s exchange. Cannot run.`));
+        logger.output(chalk.red(`ERROR! You're not at ${planet}'s exchange. Cannot run.`));
         process.exit(0)
     }
 }
@@ -172,7 +172,7 @@ async function verifyAtPlanetExchange(planet) {
 async function runCycle() {
     await logger.balances(connection)
 
-    console.log(`Cycle #${cycleNum} starting.`)
+    logger.output(`Cycle #${cycleNum} starting.`)
 
     let startingPlanet = steps[0].from
     
@@ -182,7 +182,7 @@ async function runCycle() {
         await runStep(step)
     }
 
-    console.log(`Cycle #${cycleNum} finished all steps.`)
+    logger.output(`Cycle #${cycleNum} finished all steps.`)
     cycleNum++
 }
 
@@ -199,7 +199,7 @@ async function runStep(step) {
     } else if(step.type === "WALK_UP") {
         await exchange.walkUpStockpiles(connection)
     } else {
-        console.log(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
+        logger.output(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
     }
 }
 
@@ -216,19 +216,19 @@ async function tradeBetween(planetA, planetB) {
         await checkStamina(planetA)
     }
 
-    console.log(chalk.blue(`Auto-trading: ${planetA} <=> ${planetB}.`))
+    logger.output(chalk.blue(`Auto-trading: ${planetA} <=> ${planetB}.`))
 
     await connection.send("buy fuel")
 
     // Gather info about planet A
-    console.log(`Scanning ${planetA} exchange.`)
+    logger.output(`Scanning ${planetA} exchange.`)
     let planetAExc = await connection.send("di exchange")
     let planetAImpEx = parseExData(planetAExc)
 
     await navigate(planetA, planetB)
 
     // Gather info about planet B
-    console.log(`Scanning ${planetB} exchange.`)
+    logger.output(`Scanning ${planetB} exchange.`)
     let planetBExc = await connection.send("di exchange")
     let planetBImpEx = parseExData(planetBExc)
 
@@ -237,15 +237,15 @@ async function tradeBetween(planetA, planetB) {
     let routesBtoA = _.intersection(planetBImpEx.exp, planetAImpEx.imp)
 
     if(routesAtoB.length > 0) {
-        console.log(`Routes from ${planetA} => ${planetB} (${routesAtoB.length}): ${routesAtoB.join(", ")}`)
+        logger.output(`Routes from ${planetA} => ${planetB} (${routesAtoB.length}): ${routesAtoB.join(", ")}`)
     } else {
-        console.log(`No available routes from ${planetA} => ${planetB}`)
+        logger.output(`No available routes from ${planetA} => ${planetB}`)
     }
 
     if(routesBtoA.length > 0) {
-        console.log(`Routes from ${planetB} => ${planetA} (${routesBtoA.length}): ${routesBtoA.join(", ")}`)
+        logger.output(`Routes from ${planetB} => ${planetA} (${routesBtoA.length}): ${routesBtoA.join(", ")}`)
     } else {
-        console.log(`No available routes from ${planetB} => ${planetA}`)
+        logger.output(`No available routes from ${planetB} => ${planetA}`)
     }
 
     await navigate(planetB, planetA)
@@ -303,15 +303,15 @@ async function checkStamina(planet) {
     let match = staminaRegex.exec(score)
 
     if(!match) {
-        console.log(chalk.red("ERROR! Unable to get stamina info."))
+        logger.output(chalk.red("ERROR! Unable to get stamina info."))
         process.exit(0)
     } else {
-        console.log("Current stamina: " + chalk.bold.white(match[2]))
+        logger.output("Current stamina: " + chalk.bold.white(match[2]))
         
         let stamina = parseInt(match[2])
 
         if(stamina < STAMINA_MIN) {
-            console.log(chalk.yellow(`Stamina less than ${STAMINA_MIN}. Buying food from the planet's restaurant.`))
+            logger.output(chalk.yellow(`Stamina less than ${STAMINA_MIN}. Buying food from the planet's restaurant.`))
 
             const planetInfo = planets[planet]
 
@@ -325,7 +325,7 @@ async function checkStamina(planet) {
 
             await connection.send("buy food")
 
-            console.log("Food purchased. Itadakimasu! 🍕")
+            logger.output("Food purchased. Itadakimasu! 🍕")
 
             for(let cmd of planetInfo.fromRestaurant) {
                 await connection.send(cmd)
@@ -345,7 +345,7 @@ async function checkStamina(planet) {
  * @param {String} to 
  */
 async function navigate(from, to) {
-    console.log(chalk.blue("Moving from " + from + " to " + to + ". ") + "🚀")
+    logger.output(chalk.blue("Moving from " + from + " to " + to + ". ") + "🚀")
 
     let fromPlanet = planets[from]
     let toPlanet = planets[to]
@@ -380,7 +380,7 @@ async function navigate(from, to) {
 async function buyCommod(commod) {
     lastBankBalance = await checkBankBalance()
 
-    console.log("Buying " + cargoBays + " bays of " + emoji.formatCommod(commod))
+    logger.output("Buying " + cargoBays + " bays of " + emoji.formatCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("buy " + commod)
@@ -393,7 +393,7 @@ async function buyCommod(commod) {
  * @param {String} commod 
  */
 async function sellCommod(commod) {
-    console.log("Selling " + cargoBays + " bays of " + emoji.formatCommod(commod))
+    logger.output("Selling " + cargoBays + " bays of " + emoji.formatCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("sell " + commod)
@@ -402,7 +402,7 @@ async function sellCommod(commod) {
     const newBankBalance = await checkBankBalance()
     const profit = newBankBalance - lastBankBalance
 
-    console.log(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale. 🤑`)
+    logger.output(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale. 🤑`)
 
     // Ensure everything sold properly
     await checkCargoHold()
@@ -434,7 +434,7 @@ function parseExData(data) {
         }
     }
 
-    console.log("Exchange has " + exp.length + " surpluses and " + imp.length + " deficits.")
+    logger.output("Exchange has " + exp.length + " surpluses and " + imp.length + " deficits.")
 
     return {
         exp: exp,
