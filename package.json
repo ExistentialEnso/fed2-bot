@@ -1,13 +1,16 @@
 {
-  "name": "fed-bot",
+  "name": "fed2-bot",
   "version": "1.0.0",
-  "description": "A bot for Fed2",
+  "description": "A bot for Fed2 planet owners.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Thorne N. Melcher <thorne@crowdmed.com>",
+  "author": {
+    "name": "Thorne Melcher",
+    "url": "https://www.thorne.codes"
+  },
   "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",

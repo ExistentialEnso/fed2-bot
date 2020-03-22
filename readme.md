@@ -1,6 +1,6 @@
 # Thorne's Fed2 Bot
 
-This is a Node-powered bot that hauls commodities between planets belonging to a planet owner in the MUD [Federation II](https://www.federation2.com).
+Built for the MUD [Federation II](https://federation2.com), this is a Node-powered bot that hauls commodities between planets belonging to a planet owner.
 
 This is currently setup to work with my star system and would require minor code changes to work for others needs.
 
