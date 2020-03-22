@@ -53,6 +53,9 @@ const planets = {
     }
 }
 
+/**
+* Easily lets us wait for a specified period of time with await
+*/
 function sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(resolve, ms)
@@ -77,6 +80,7 @@ async function run() {
 
     console.log("Connected to Federation 2!")
 
+    // Authenticate the user
     await connection.send(account.username)
     await connection.send(account.password)
 
@@ -104,6 +108,9 @@ async function run() {
     }
 }
 
+/**
+ * Ensure we don't have anything in our cargo hold
+ */
 async function checkCargoHold(connection) {
     let status = await connection.send("st")
 
@@ -112,10 +119,13 @@ async function checkCargoHold(connection) {
     if(match[1] !== match[2]) {
         console.log(chalk.red("Cargo detected in hold."))
 
-        process.exit(1)
+        process.exit(0)
     }
 }
 
+/**
+ * Determine how much money is in our bank account
+ */
 async function checkBankBalance(connection) {
     let score = await connection.send("sc")
 
@@ -126,6 +136,9 @@ async function checkBankBalance(connection) {
     return parseInt(balance)
 }
 
+/**
+ * Run a single cycle of our hauling
+ */
 async function runCycle(connection) {
     let score = await connection.send("sc")
     let match = staminaRegex.exec(score)
@@ -159,6 +172,13 @@ async function runCycle(connection) {
     console.log("Run complete!")
 }
 
+/**
+ * Determines two planets available imports & exports and runs any possible 
+ * routes between them.
+ * 
+ * @param {String} planetA Name of the first planet
+ * @param {String} planetB Name of the second plent
+ */
 async function tradeBetween(connection, planetA, planetB) {
     console.log(chalk.green(`Running routes ${planetA} <=> ${planetB}.`))
 
