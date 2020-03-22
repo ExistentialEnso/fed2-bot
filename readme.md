@@ -41,7 +41,7 @@ Now, finally, you can run the bot by typing ```npm start```.
 * The last step should ensure you are back on the planet where the first step starts
 * All planet data requires the following arrays: ```toExchange```, ```fromExchange```, ```toLink```, ```fromLink```
 * If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```
-* You must define restaurant info for at least one planet with ```toRestaurant``` and ```fromRestaurant``` to replenish stamina
+* At least one planet must have ```toRestaurant``` and ```fromRestaurant``` defined to replenish stamina
 
 ## Logging
 
