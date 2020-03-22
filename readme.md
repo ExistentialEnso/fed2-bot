@@ -6,15 +6,15 @@ Cross-platform on anything that can run Node.js (including Windows, macOS, and L
 
 ## Features
 
-🍕 Ensures your character eats when stamina is low to avoid death by starvation.
+🍕 Ensures your character eats when stamina is low to avoid death by starvation
+
+📈 Able to "walk up" new exchanges, i.e. slowly increasing stockpiles to 20k tons over time
+
+🧪 Validates configuration and tells you any problems found
 
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
 
-📈 Support for "walking up" new exchanges, i.e. slowly increasing stockpiles over time.
-
-🧪 Validates configuration and tells you any problems found.
-
-📒 Logs useful information automatically.
+📒 Logs useful information automatically
 
 😍 Detailed output (with cute emoji!)
 
@@ -34,21 +34,21 @@ Now, finally, you can run the bot by typing ```npm start```.
 ## Notes
 
 * Your character needs to be in the exchange of the first step's planet when beginning the bot
-* Steps must have a type, which must be one of: MOVE, TRADE, WALK_UP
-* MOVE and TRADE steps require the following planet names: to, from
-* TRADE steps are two way: if the "to" planet has surpluses that are deficits on the "from" planet, they are hauled
-* TRADE steps put you back on the "from" planet when they finish
+* Steps must have a type, which must be one of: ```MOVE```, ```TRADE```, ```WALK_UP```
+* ```MOVE``` and ```TRADE``` steps require the following planet names: to, from
+* ```TRADE``` steps are two way: if the ```to``` planet has surpluses that are deficits on the ```from``` planet, they are hauled
+* ```TRADE``` steps put you back on the ```from``` planet when they finish
 * The last step should ensure you are back on the planet where the first step starts
-* All planet data requires the following arrays: toExchange, fromExchange, toLink, fromLink
+* All planet data requires the following arrays: ```toExchange```, ```fromExchange```, ```toLink```, ```fromLink```
 * If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```
-* You must define restaurant info for at least one planet to replenish stamina
+* You must define restaurant info for at least one planet with ```toRestaurant``` and ```fromRestaurant`` to replenish stamina
 
 ## Logging
 
 The bot automatically generates the following logs found in the ```logs``` folder:
 
-* ```balances.csv``` - Each cycle, this records your bank balance and the sum of your system's balances
-* ```output.txt``` - All terminal output is saved here (minus the color/bold effects)
+* ```balances.csv``` - At the start of each cycle, this records your bank balance and the sum of your system's balances
+* ```output.txt``` - All terminal output is saved here (minus the color/bold effects -- but it keeps the emoji!)
 
 ## License
 
