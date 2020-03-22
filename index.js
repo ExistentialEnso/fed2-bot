@@ -57,11 +57,11 @@ async function run() {
 
     console.log("Validating steps data for errors.")
     validateSteps(steps)
-    console.log("No issues found!")
+    console.log(chalk.green("No issues found!"))
 
     console.log("Validating planets data for errors.")
     validatePlanets(planets)
-    console.log("No issues found!")
+    console.log(chalk.green("No issues found!"))
 
     console.log("Connecting to Federation 2 servers...")
 
