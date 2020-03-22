@@ -10,9 +10,9 @@ Cross-platform on anything that can run Node.js (including Windows, macOS, and L
 
 📈 Able to "walk up" new exchanges, i.e. slowly increasing stockpiles to 20k tons over time
 
-🧪 Validates configuration and tells you any problems found
-
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
+
+🧪 Validates configuration and tells you any problems found
 
 📒 Logs useful information automatically
 

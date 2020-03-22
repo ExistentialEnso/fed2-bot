@@ -60,7 +60,7 @@ function sleep(ms) {
  * The main function that starts up everything else
  */
 async function run() {
-    logger.output("Validating steps & planet data for errors...")
+    logger.output("Validating step & planet data for errors...")
     const stepsValid = validator.validateSteps(steps)
     const planetValid = validator.validatePlanets(planets)
 
