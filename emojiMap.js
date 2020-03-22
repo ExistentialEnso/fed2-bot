@@ -1,3 +1,7 @@
+/**
+ * This provides emoji that give extra flair to commodity names
+ */
+
 const emoji = {
     Cereals: "🌾",
     Fruit: "🍒",

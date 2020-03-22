@@ -427,6 +427,9 @@ async function navigate(connection, from, to) {
     }
 }
 
+/**
+ * Fills our cargo bay with the specified commodity
+ */
 async function buyCommod(connection, commod) {
     lastBankBalance = await checkBankBalance(connection)
 
@@ -437,6 +440,9 @@ async function buyCommod(connection, commod) {
     }
 }
 
+/**
+ * Sells off all of the commodity we are hauling
+ */
 async function sellCommod(connection, commod) {
     console.log("Selling " + cargoBays + " bays of " + outputCommod(commod))
 
@@ -453,6 +459,11 @@ async function sellCommod(connection, commod) {
     await checkCargoHold(connection)
 }
 
+/**
+ * Formats a commodity's name for output. Tacks on an emoji if one is available.
+ * 
+ * @param {String} commod
+ */
 function outputCommod(commod) {
     if(emojiMap[commod]) {
         return commod + " " + emojiMap[commod]
@@ -461,6 +472,9 @@ function outputCommod(commod) {
     }
 }
 
+/**
+ * Parses exchange data in order to determine current surpluses and deficits
+ */
 function parseExData(data) {
     let commods = data.split("\n")
 
