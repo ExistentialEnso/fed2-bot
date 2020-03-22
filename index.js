@@ -1,14 +1,22 @@
 const Telnet = require('telnet-client')
 const _ = require('lodash')
-const moment = require('moment')
 const chalk = require('chalk')
 
 require('dotenv').config()
 
+// How many cargo bays are in your ship?
 const CARGO_BAYS = 12
+
+// What is the cutoff to determine deficits?
 const DEFICIT_MAX = -500
+
+// What is the cutoff to determine surpluses?
 const SURPLUS_MIN = 19000
 
+// How many minutes to sleep between each cycle?
+const SLEEP_MINUTES = 15
+
+// Load in account data from .env
 const account = {
     username: process.env.FED_USERNAME,
     password: process.env.FED_PASSWORD
@@ -89,11 +97,10 @@ async function run() {
     while(true) {
         await runCycle(connection)
 
-        console.log("Sleeping for 15 minutes.")
+        console.log(`Sleeping for ${SLEEP_MINUTES} minutes.`)
 
-        console.log(moment())
-        await sleep(1000 * 60 * 15)
-        console.log(moment())
+        // Sleep until we need to repeat the cycle again
+        await sleep(1000 * 60 * SLEEP_MINUTES)
     }
 }
 
