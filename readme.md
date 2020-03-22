@@ -2,8 +2,6 @@
 
 Built for the MUD [Federation II](https://federation2.com), this is a bot that hauls commodities between planets belonging to a planet owner. Cross-platform on anything that can run Node.js (including Windows, macOS, and Linux.)
 
-This is currently setup to work with my star system and would require minor code changes to work for others needs.
-
 ## Setup
 
 This assumes you already have Node setup on your machine. If not, plenty of guides already exist for that task.
@@ -12,10 +10,21 @@ Install the dependencies with ```npm install``` or ```yarn install```.
 
 Username and password data is loaded from a file named ```.env``` not present in the repository for security reasons. Either copy or rename ```template.env``` and edit it to contain your login information.
 
-Planet information is defined in ```planets.js``` and steps are defined in ```steps.js```. The repository contains the configuration I use in the Enso system These should be edited to suit your particular needs. Note that "TRADE" steps are two-way despite having a "from" and "to" value, though you need to be in the 
-exchange of the "from" planet at the beginning of that step.
+Planet information is defined in ```planets.js``` and steps are defined in ```steps.js```. I've included my personal configuration for the Enso system as an 
+example to help understand how these files should be configured.
 
 Now, finally, you can run the bot by typing ```npm start```.
+
+## Notes
+
+* Your character must be in the exchange of the first step's planet when beginning the bot
+* All step data requires the following fields: type, to, from
+* Step type must be either "MOVE" or "TRADE"
+* Steps with type "TRADE" put you back on the "from" planet at the end, so the next step should have the same "from" value
+* The last step should put you back on the planet where you started
+* All planet data requires the following fields: toExchange, fromExchange, toLink, fromLink
+* If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```
+* You must define restaurant info for at least one planet to replenish stamina
 
 ## License
 

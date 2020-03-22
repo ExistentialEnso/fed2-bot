@@ -96,6 +96,11 @@ function validateSteps() {
             valid = false
         }
 
+        if(step.type !== "TRADE" && step.type !== "MOVE") {
+            console.log(chalk.red("ERROR! Invalid step type: " + step.type))
+            valid = false
+        }
+
         if(step.from === step.to) {
             console.log(chalk.red("ERROR! A step can't have the same from & to values: " + JSON.stringify(step)))
         }
