@@ -6,10 +6,10 @@ const emojiMap = require('./emojiMap')
 // Load in our .env file
 require('dotenv').config()
 
-// What is the maximum cutoff to determine commodity deficits?
+// What is the maximum cutoff to determine current commodity deficits?
 const DEFICIT_MAX = -500
 
-// What is the minimum cutoff to determine commodity surpluses?
+// What is the minimum cutoff to determine current commodity surpluses?
 const SURPLUS_MIN = 19000
 
 // How many minutes to sleep between each cycle?
