@@ -1,7 +1,7 @@
 const Telnet = require('telnet-client')
 const _ = require('lodash')
 const chalk = require('chalk')
-const emojiMap = require('./emojiMap')
+const emoji = require('./lib/emoji')
 const validator = require('./lib/validator')
 
 // Load in our .env file
@@ -404,8 +404,8 @@ async function sellCommod(commod) {
  * @param {String} commod
  */
 function outputCommod(commod) {
-    if(emojiMap[commod]) {
-        return commod + " " + emojiMap[commod]
+    if(emoji[commod]) {
+        return commod + " " + emoji[commod]
     } else {
         return commod
     }
@@ -413,6 +413,8 @@ function outputCommod(commod) {
 
 /**
  * Parses exchange data in order to determine current surpluses and deficits
+ * 
+ * @param {String} commod Output from command: di exchange
  */
 function parseExData(data) {
     let commods = data.split("\n")
