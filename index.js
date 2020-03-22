@@ -33,6 +33,9 @@ let cargoBays = 0
 const planets = require("./planets")
 const steps = require("./steps")
 
+// Holds our Telnet connection into the Fed2 server
+const connection = new Telnet()
+
 /**
 * Easily lets us wait for a specified period of time with await
 */
@@ -46,8 +49,6 @@ function sleep(ms) {
  * The main function that starts up everything else
  */
 async function run() {
-    const connection = new Telnet()
-
     let params = {
         host: 'play.federation2.com',
         port: 30003,
@@ -79,10 +80,10 @@ async function run() {
 
     console.log("Bot is powering up. BEEP-BOOP! 🤖")
 
-    await calculateCargoBays(connection)
+    await calculateCargoBays()
 
     while(true) {
-        await runCycle(connection)
+        await runCycle()
 
         console.log(`Bot is sleeping for ${SLEEP_MINUTES} minutes. 😴`)
 
@@ -180,7 +181,7 @@ function validatePlanets() {
     }
 }
 
-async function calculateCargoBays(connection) {
+async function calculateCargoBays() {
     let status = await connection.send("st")
 
     let match = cargoSpaceRegex.exec(status)
@@ -196,7 +197,7 @@ async function calculateCargoBays(connection) {
 /**
  * Ensure we don't have anything in our cargo hold
  */
-async function checkCargoHold(connection) {
+async function checkCargoHold() {
     let status = await connection.send("st")
 
     let match = cargoSpaceRegex.exec(status)
@@ -210,7 +211,7 @@ async function checkCargoHold(connection) {
 /**
  * Determine how much money is in our bank account
  */
-async function checkBankBalance(connection) {
+async function checkBankBalance() {
     let score = await connection.send("sc")
 
     let match = bankBalanceRegex.exec(score)
@@ -220,7 +221,7 @@ async function checkBankBalance(connection) {
     return parseInt(balance)
 }
 
-async function verifyAtPlanetExchange(connection, planet) {
+async function verifyAtPlanetExchange(planet) {
     let score = await connection.send("sc")
 
     let match = currentPlanetRegex.exec(score)
@@ -241,13 +242,13 @@ async function verifyAtPlanetExchange(connection, planet) {
 /**
  * Run a single cycle of our hauling steps defined in steps.js
  */
-async function runCycle(connection) {
+async function runCycle() {
     let startingPlanet = steps[0].from
     
-    await verifyAtPlanetExchange(connection, startingPlanet)
+    await verifyAtPlanetExchange(startingPlanet)
 
     for(let step of steps) {
-        await runStep(connection, step)
+        await runStep(step)
     }
 
     console.log("All steps complete!")
@@ -256,11 +257,11 @@ async function runCycle(connection) {
 /**
  * Runs a single of the steps defined in steps.js
  */
-async function runStep(connection, step) {
+async function runStep(step) {
     if(step.type === "TRADE") {
-        await tradeBetween(connection, step.from, step.to)
+        await tradeBetween(step.from, step.to)
     } else if(step.type === "MOVE") {
-        await navigate(connection, step.from, step.to)
+        await navigate(step.from, step.to)
     } else {
         console.log(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
     }
@@ -273,10 +274,10 @@ async function runStep(connection, step) {
  * @param {String} planetA Name of the first planet
  * @param {String} planetB Name of the second plent
  */
-async function tradeBetween(connection, planetA, planetB) {
+async function tradeBetween(planetA, planetB) {
     // If planet A has a restaurant defined, we should check our stamina
     if(planets[planetA].toRestaurant) {
-        await checkStamina(connection, planetA)
+        await checkStamina(planetA)
     }
 
     console.log(chalk.blue(`Auto-trading: ${planetA} <=> ${planetB}.`))
@@ -288,7 +289,7 @@ async function tradeBetween(connection, planetA, planetB) {
     let planetAExc = await connection.send("di exchange")
     let planetAImpEx = parseExData(planetAExc)
 
-    await navigate(connection, planetA, planetB)
+    await navigate(planetA, planetB)
 
     // Gather info about planet B
     console.log(`Scanning ${planetB} exchange.`)
@@ -311,14 +312,14 @@ async function tradeBetween(connection, planetA, planetB) {
         console.log(`No available routes from ${planetB} to ${planetA}`)
     }
 
-    await navigate(connection, planetB, planetA)
+    await navigate(planetB, planetA)
 
     while(routesAtoB.length > 0) {
         let commod = routesAtoB[0]
 
-        await buyCommod(connection, commod)
-        await navigate(connection, planetA, planetB)
-        await sellCommod(connection, commod)
+        await buyCommod(commod)
+        await navigate(planetA, planetB)
+        await sellCommod(commod)
 
         // Remove this from our list
         routesAtoB = routesAtoB.slice(1)
@@ -327,12 +328,12 @@ async function tradeBetween(connection, planetA, planetB) {
         let returnCommod = returnLoad ? routesBtoA[0] : ""
 
         if(returnLoad)
-            await buyCommod(connection, returnCommod)
+            await buyCommod(returnCommod)
 
-        await navigate(connection, planetB, planetA)
+        await navigate(planetB, planetA)
 
         if(returnLoad) {
-            await sellCommod(connection, returnCommod)
+            await sellCommod(returnCommod)
             routesBtoA = routesBtoA.slice(1)
         }
 
@@ -341,13 +342,13 @@ async function tradeBetween(connection, planetA, planetB) {
 
     if(routesBtoA.length > 0) {
         while(routesBtoA.length > 0) {
-            navigate(connection, planetA, planetB)
+            navigate(planetA, planetB)
 
             let commod = routesBtoA[0]
 
-            await buyCommod(connection, commod)
-            await navigate(connection, planetB, planetA)
-            await sellCommod(connection, commod)
+            await buyCommod(commod)
+            await navigate(planetB, planetA)
+            await sellCommod(commod)
 
             routesBtoA = routesBtoA.slice(1)
 
@@ -356,7 +357,7 @@ async function tradeBetween(connection, planetA, planetB) {
     }
 }
 
-async function checkStamina(connection, planet) {
+async function checkStamina(planet) {
     let score = await connection.send("sc")
     let match = staminaRegex.exec(score)
 
@@ -399,7 +400,7 @@ async function checkStamina(connection, planet) {
 /**
  * Navigates from the exchange on one planet to another
  */
-async function navigate(connection, from, to) {
+async function navigate(from, to) {
     console.log(chalk.blue("Moving from " + from + " to " + to + ". ") + "🚀")
 
     let fromPlanet = planets[from]
@@ -430,8 +431,8 @@ async function navigate(connection, from, to) {
 /**
  * Fills our cargo bay with the specified commodity
  */
-async function buyCommod(connection, commod) {
-    lastBankBalance = await checkBankBalance(connection)
+async function buyCommod(commod) {
+    lastBankBalance = await checkBankBalance()
 
     console.log("Buying " + cargoBays + " bays of " + outputCommod(commod))
 
@@ -443,20 +444,20 @@ async function buyCommod(connection, commod) {
 /**
  * Sells off all of the commodity we are hauling
  */
-async function sellCommod(connection, commod) {
+async function sellCommod(commod) {
     console.log("Selling " + cargoBays + " bays of " + outputCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("sell " + commod)
     }
 
-    const newBankBalance = await checkBankBalance(connection)
+    const newBankBalance = await checkBankBalance()
     const profit = newBankBalance - lastBankBalance
 
     console.log(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale. 🤑`)
 
     // Ensure everything sold properly
-    await checkCargoHold(connection)
+    await checkCargoHold()
 }
 
 /**
