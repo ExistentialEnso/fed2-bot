@@ -8,7 +8,7 @@ Built for the MUD [Federation II](https://federation2.com), this is a bot that h
 
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
 
-🧪 Validates configuration and outputs any problems found.
+🧪 Validates configuration and tells you any problems found.
 
 😍 Detailed output (with cute emoji!)
 
