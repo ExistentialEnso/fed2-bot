@@ -60,7 +60,7 @@ const emoji = {
     //Probes: "",
     //Proteins: "",
     Sensors: "📡",
-    //ToxicMunchers: "",
+    ToxicMunchers: "☣️",
     //Tracers: "",
 
     Artifacts: "🏺",
