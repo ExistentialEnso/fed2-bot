@@ -74,7 +74,7 @@ async function run() {
 
     await sleep(2000)
 
-    console.log("🤖 Bot is powering up. BEEP-BOOP! 🤖")
+    console.log("Bot is powering up. BEEP-BOOP! 🤖")
 
     await calculateCargoBays(connection)
 
