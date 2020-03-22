@@ -5,10 +5,10 @@ const chalk = require('chalk')
 // Load in our .env file
 require('dotenv').config()
 
-// What is the cutoff to determine deficits?
+// What is the maximum cutoff to determine commodity deficits?
 const DEFICIT_MAX = -500
 
-// What is the cutoff to determine surpluses?
+// What is the minimum cutoff to determine commodity surpluses?
 const SURPLUS_MIN = 19000
 
 // How many minutes to sleep between each cycle?
@@ -24,9 +24,11 @@ let bankBalanceRegex = new RegExp("([0-9,\,]*)ig")
 let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 let currentPlanetRegex = new RegExp("You are currently on ([A-Z,a-z,0-9]*) in the")
 
+// Saved info
 let lastBankBalance = 0
 let cargoBays = 0
 
+// Import our planet and step configuration
 const planets = require("./planets")
 const steps = require("./steps")
 
@@ -35,7 +37,7 @@ const steps = require("./steps")
 */
 function sleep(ms) {
     return new Promise((resolve) => {
-      setTimeout(resolve, ms)
+        setTimeout(resolve, ms)
     })
 }   
 
@@ -51,13 +53,6 @@ async function run() {
         negotiationMandatory: false
     }
 
-    try {
-        await connection.connect(params)
-    } catch(error) {
-        console.log("Error!")
-        console.log(error)
-    }
-
     console.log("Validating steps data for errors.")
     validateSteps(steps)
     console.log("No issues found!")
@@ -67,6 +62,13 @@ async function run() {
     console.log("No issues found!")
 
     console.log("Connecting to Federation 2 servers...")
+
+    try {
+        await connection.connect(params)
+    } catch(error) {
+        console.log("ERROR! Could not connect to Fed2.")
+        process.exit(0)
+    }
 
     // Authenticate the user
     await connection.send(process.env.FED_USERNAME)
@@ -167,7 +169,7 @@ function validatePlanets() {
     }
 
     if(!foundRestaurant) {
-        console.log(chalk.red("No planets have restaurants defined. Need at least one restaurant."))
+        console.log(chalk.red("ERROR! No planets have restaurants defined. Need at least one restaurant."))
         valid = false
     }
 
@@ -187,7 +189,7 @@ async function calculateCargoBays(connection) {
     // Save this info for use elsewhere
     cargoBays = Math.trunc(tonnage/75)
 
-    console.log(`Your ship has ${cargoBays} cargo bays (${tonnage} tons).`);
+    console.log(`Your ship has ${cargoBays} cargo bays. 📦`);
 }
 
 /**
@@ -200,7 +202,6 @@ async function checkCargoHold(connection) {
 
     if(match[1] !== match[2]) {
         console.log(chalk.red("ERROR! Cargo detected in hold."))
-
         process.exit(0)
     }
 }
@@ -248,7 +249,7 @@ async function runCycle(connection) {
         await runStep(connection, step)
     }
 
-    console.log("Run complete!")
+    console.log("All steps complete!")
 }
 
 /**
@@ -277,7 +278,7 @@ async function tradeBetween(connection, planetA, planetB) {
         await checkStamina(connection, planetA)
     }
 
-    console.log(chalk.green(`Running routes ${planetA} <=> ${planetB}.`))
+    console.log(chalk.magenta(`Auto-trading: ${planetA} <=> ${planetB}.`))
 
     await connection.send("buy fuel")
 
@@ -367,7 +368,7 @@ async function checkStamina(connection, planet) {
         let stamina = parseInt(match[2])
 
         if(stamina < STAMINA_MIN) {
-            console.log(chalk.red(`Stamina less than ${STAMINA_MIN}. Buying food from the planet's restaurant.`))
+            console.log(chalk.yellow(`Stamina less than ${STAMINA_MIN}. Buying food from the planet's restaurant.`))
 
             const planetInfo = planets[planet]
 
