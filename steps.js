@@ -26,6 +26,14 @@ const steps = [
     {
         type: "MOVE",
         from: "Phoenix",
+        to: "Zen"
+    },
+    {
+        type: "WALK_UP"
+    },
+    {
+        type: "MOVE",
+        from: "Zen",
         to: "Sakura"
     }
 ]

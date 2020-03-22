@@ -373,7 +373,7 @@ async function navigate(from, to) {
 async function buyCommod(commod) {
     lastBankBalance = await checkBankBalance()
 
-    console.log("Buying " + cargoBays + " bays of " + outputCommod(commod))
+    console.log("Buying " + cargoBays + " bays of " + emoji.formatCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("buy " + commod)
@@ -386,7 +386,7 @@ async function buyCommod(commod) {
  * @param {String} commod 
  */
 async function sellCommod(commod) {
-    console.log("Selling " + cargoBays + " bays of " + outputCommod(commod))
+    console.log("Selling " + cargoBays + " bays of " + emoji.formatCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("sell " + commod)
@@ -399,19 +399,6 @@ async function sellCommod(commod) {
 
     // Ensure everything sold properly
     await checkCargoHold()
-}
-
-/**
- * Formats a commodity's name for output. Tacks on an emoji if one is available.
- * 
- * @param {String} commod
- */
-function outputCommod(commod) {
-    if(emoji[commod]) {
-        return commod + " " + emoji[commod]
-    } else {
-        return commod
-    }
 }
 
 /**
