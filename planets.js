@@ -26,4 +26,4 @@ const planets = {
     }
 }
 
-export default planets
+module.exports = planets

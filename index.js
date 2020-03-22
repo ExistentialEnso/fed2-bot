@@ -25,7 +25,8 @@ let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 
 let lastBankBalance = 0
 
-const planets = require("planets")
+const planets = require("./planets")
+const steps = require("./steps")
 
 /**
 * Easily lets us wait for a specified period of time with await
@@ -134,16 +135,24 @@ async function runCycle(connection) {
         }
     }
 
-    await tradeBetween(connection, "Sakura", "Phoenix")
-    await tradeBetween(connection, "Sakura", "Zen")
-
-    await navigate(connection, "Sakura", "Phoenix")
-
-    await tradeBetween(connection, "Phoenix", "Zen")
-
-    await navigate(connection, "Phoenix", "Sakura")
+    for(let step of steps) {
+        await runStep(connection, step)
+    }
 
     console.log("Run complete!")
+}
+
+/**
+ * Runs a single of the steps defined in steps.js
+ */
+async function runStep(connection, step) {
+    if(step.type === "TRADE") {
+        await tradeBetween(connection, step.from, step.to)
+    } else if(step.type === "MOVE") {
+        await navigate(connection, step.from, step.to)
+    } else {
+        console.log(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
+    }
 }
 
 /**

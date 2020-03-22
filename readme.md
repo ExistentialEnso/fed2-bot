@@ -1,24 +1,21 @@
 # Thorne's Fed2 Bot
 
-Built for the MUD [Federation II](https://federation2.com), this is a Node-powered bot that hauls commodities between planets belonging to a planet owner.
+Built for the MUD [Federation II](https://federation2.com), this is a bot that hauls commodities between planets belonging to a planet owner. Cross-platform on anything that can run Node.js (including Windows, macOS, and Linux.)
 
 This is currently setup to work with my star system and would require minor code changes to work for others needs.
 
 ## Setup
 
-Install the dependencies:
+This assumes you already have Node setup on your machine. If not, plenty of guides already exist for that task.
 
-```bash
-npm install
-```
+Install the dependencies with ```npm install``` or ```yarn install```.
 
-Username and password data is loaded from a file named ```.env``` not present in the repository. Either copy or rename ```template.env``` and edit it to contain your login information.
+Username and password data is loaded from a file named ```.env``` not present in the repository for security reasons. Either copy or rename ```template.env``` and edit it to contain your login information.
 
-Now you can run the bot by typing:
+Planet information is defined in ```planets.js``` and steps are defined in ```steps.js```. The repository contains the configuration I use in the Enso system These should be edited to suit your particular needs. Note that "TRADE" steps are two-way despite having a "from" and "to" value, though you need to be in the 
+exchange of the "from" planet at the beginning of that step.
 
-```bash
-npm start
-```
+Now, finally, you can run the bot by typing ```npm start```.
 
 ## License
 
