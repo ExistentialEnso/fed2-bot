@@ -278,7 +278,7 @@ async function tradeBetween(connection, planetA, planetB) {
         await checkStamina(connection, planetA)
     }
 
-    console.log(chalk.magenta(`Auto-trading: ${planetA} <=> ${planetB}.`))
+    console.log(chalk.blue(`Auto-trading: ${planetA} <=> ${planetB}.`))
 
     await connection.send("buy fuel")
 
