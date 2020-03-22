@@ -8,6 +8,8 @@ Built for the MUD [Federation II](https://federation2.com), this is a bot that h
 
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
 
+📈 Support for "walking up" new exchanges, i.e. slowly increasing stockpiles over time.
+
 🧪 Validates configuration and tells you any problems found.
 
 😍 Detailed output (with cute emoji!)
@@ -28,9 +30,9 @@ Now, finally, you can run the bot by typing ```npm start```.
 ## Notes
 
 * Your character **must** be in the exchange of the first step's planet when beginning the bot
-* All step data requires the following fields: type, to, from
-* Step type must be either "MOVE" or "TRADE"
-* Steps with type "TRADE" put you back on the "from" planet at the end, so the next step should have the same "from" value
+* Step type must be one of: MOVE, TRADE, WALK_UP
+* MOVE and TRADE steps require the following fields: type, to, from
+* Steps with type TRADE put you back on the "from" planet at the end, so the next step should have the same "from" value
 * The last step should put you back on the planet where you started
 * All planet data requires the following fields: toExchange, fromExchange, toLink, fromLink
 * If the planet's orbit is the same as the interstellar link, just provide an empty array: ```[]```

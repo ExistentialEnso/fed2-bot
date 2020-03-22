@@ -3,6 +3,7 @@ const _ = require('lodash')
 const chalk = require('chalk')
 const emoji = require('./lib/emoji')
 const validator = require('./lib/validator')
+const exchange = require('./lib/exchange')
 
 // Load in our .env file
 require('dotenv').config()
@@ -188,6 +189,8 @@ async function runStep(step) {
         await tradeBetween(step.from, step.to)
     } else if(step.type === "MOVE") {
         await navigate(step.from, step.to)
+    } else if(step.type === "WALK_UP") {
+        await exchange.walkUpStockpiles(connection)
     } else {
         console.log(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
     }
