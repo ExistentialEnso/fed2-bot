@@ -79,7 +79,7 @@ async function run() {
     while(true) {
         await runCycle(connection)
 
-        console.log(`Sleeping for ${SLEEP_MINUTES} minutes.`)
+        console.log(`Bot is sleeping for ${SLEEP_MINUTES} minutes. 😴`)
 
         // Sleep until we need to repeat the cycle again
         await sleep(1000 * 60 * SLEEP_MINUTES)
@@ -279,21 +279,33 @@ async function tradeBetween(connection, planetA, planetB) {
 
     await connection.send("buy fuel")
 
+    // Gather info about planet A
     console.log(`Scanning ${planetA} exchange.`)
     let planetAExc = await connection.send("di exchange")
     let planetAImpEx = parseExData(planetAExc)
 
     await navigate(connection, planetA, planetB)
 
+    // Gather info about planet B
     console.log(`Scanning ${planetB} exchange.`)
     let planetBExc = await connection.send("di exchange")
     let planetBImpEx = parseExData(planetBExc)
 
+    // Determine available trade routes
     let routesAtoB = _.intersection(planetAImpEx.exp, planetBImpEx.imp)
     let routesBtoA = _.intersection(planetBImpEx.exp, planetAImpEx.imp)
 
-    console.log(`Routes from ${planetA} to ${planetB} (${routesAtoB.length}): ${routesAtoB.join(", ")}`)
-    console.log(`Routes from ${planetB} to ${planetA} (${routesBtoA.length}): ${routesBtoA.join(", ")}`)
+    if(routesAtoB.length > 0) {
+        console.log(`Routes from ${planetA} to ${planetB} (${routesAtoB.length}): ${routesAtoB.join(", ")}`)
+    } else {
+        console.log(`No available routes from ${planetA} to ${planetB}`)
+    }
+
+    if(routesBtoA.length > 0) {
+        console.log(`Routes from ${planetB} to ${planetA} (${routesBtoA.length}): ${routesBtoA.join(", ")}`)
+    } else {
+        console.log(`No available routes from ${planetB} to ${planetA}`)
+    }
 
     await navigate(connection, planetB, planetA)
 
