@@ -430,7 +430,7 @@ async function navigate(connection, from, to) {
 async function buyCommod(connection, commod) {
     lastBankBalance = await checkBankBalance(connection)
 
-    console.log("Buying " + cargoBays + " bays of " + outputCommod(commod) + ".")
+    console.log("Buying " + cargoBays + " bays of " + outputCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("buy " + commod)
@@ -438,7 +438,7 @@ async function buyCommod(connection, commod) {
 }
 
 async function sellCommod(connection, commod) {
-    console.log("Selling " + cargoBays + " bays of " + outputCommod(commod) + ".")
+    console.log("Selling " + cargoBays + " bays of " + outputCommod(commod))
 
     for(i = 0; i < cargoBays; i++) {
         await connection.send("sell " + commod)
