@@ -222,14 +222,14 @@ async function verifyAtPlanetExchange(connection, planet) {
     let match = currentPlanetRegex.exec(score)
 
     if(match[1] !== planet) {
-        console.log(chalk.red(`You're not on the right starting planet, ${planet}. Cannot run.`));
+        console.log(chalk.red(`ERROR! You're not on the right starting planet, ${planet}. Cannot run.`));
         process.exit(0)
     }
 
     let priceTest = await connection.send("c price arts")
 
     if(priceTest.indexOf("need to be in an exchange") > -1) {
-        console.log(chalk.red(`You're not at ${planet}'s exchange. Cannot run.`));
+        console.log(chalk.red(`ERROR! You're not at ${planet}'s exchange. Cannot run.`));
         process.exit(0)
     }
 }
@@ -458,7 +458,7 @@ function parseExData(data) {
         }
     }
 
-    console.log("This exchange has " + exp.length + " available exports and " + imp.length + " available imports.")
+    console.log("Exchange has " + exp.length + " surpluses and " + imp.length + " deficits.")
 
     return {
         exp: exp,
