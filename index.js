@@ -20,7 +20,7 @@ const STAMINA_MIN = 25
 // Useful regexes for pulling out data
 let commodRegex = new RegExp("([A-Z,a-z]*): value ([0-9]*)ig/ton  Spread: ([0-9]*)%   Stock: current ([-0-9]*)")
 let staminaRegex = new RegExp("Stamina      max:  ([0-9]*) current:  ([0-9]*)")
-let bankBalanceRegex = new RegExp("Bank Balance: ([0-9,\,]*)ig")
+let bankBalanceRegex = new RegExp("([0-9,\,]*)ig")
 let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 let currentPlanetRegex = new RegExp("You are currently on ([A-Z,a-z,0-9]*) in the")
 
@@ -60,9 +60,11 @@ async function run() {
 
     console.log("Validating steps data for errors.")
     validateSteps(steps)
+    console.log("No issues found!")
 
     console.log("Validating planets data for errors.")
     validatePlanets(planets)
+    console.log("No issues found!")
 
     console.log("Connecting to Federation 2 servers...")
 
@@ -72,7 +74,7 @@ async function run() {
 
     await sleep(2000)
 
-    console.log("🤖Bot is powering up. BEEP-BOOP! 🤖")
+    console.log("🤖 Bot is powering up. BEEP-BOOP! 🤖")
 
     await calculateCargoBays(connection)
 
