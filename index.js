@@ -25,28 +25,7 @@ let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 
 let lastBankBalance = 0
 
-const planets = {
-    Sakura: {
-        system: "Enso",
-        toExchange: "n",
-        fromExchange: "s",
-        toLink: "l"
-    },
-    Phoenix: {
-        system: "Enso",
-        toExchange: "n",
-        fromExchange: "s",
-        toLink: "n",
-        fromLink: "s"
-    },
-    Zen: {
-        system: "Enso",
-        toExchange: "s",
-        fromExchange: "n",
-        toLink: "nw",
-        fromLink: "se"
-    }
-}
+const planets = require("planets")
 
 /**
 * Easily lets us wait for a specified period of time with await
