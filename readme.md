@@ -5,8 +5,11 @@ Built for the MUD [Federation II](https://federation2.com), this is a bot that h
 ## Features
 
 🍕 Ensures your character eats when stamina is low to avoid death by starvation.
+
 🚀 Calculates how many cargo bays your ship has (and refuels periodically!)
+
 🧪 Validates configuration and outputs any problems instead of running.
+
 😍 Detailed output (with cute emoji!)
 
 ## Setup
