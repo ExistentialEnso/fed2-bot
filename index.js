@@ -2,6 +2,7 @@ const Telnet = require('telnet-client')
 const _ = require('lodash')
 const chalk = require('chalk')
 const emoji = require('./lib/emoji')
+const logger = require('./lib/logger')
 const validator = require('./lib/validator')
 const exchange = require('./lib/exchange')
 
@@ -169,6 +170,8 @@ async function verifyAtPlanetExchange(planet) {
  * Run a single cycle of our hauling steps defined in steps.js
  */
 async function runCycle() {
+    await logger.balances(connection)
+
     console.log(`Cycle #${cycleNum} starting.`)
 
     let startingPlanet = steps[0].from
