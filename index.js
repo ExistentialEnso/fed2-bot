@@ -15,7 +15,7 @@ require('dotenv').config()
 const DEFICIT_MAX = -500
 
 // What is the minimum cutoff to determine current commodity surpluses?
-const SURPLUS_MIN = 19000
+const SURPLUS_MIN = 19500
 
 // How many minutes to sleep between each cycle?
 const SLEEP_MINUTES = 15
