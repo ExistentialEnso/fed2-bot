@@ -6,6 +6,7 @@ const emoji = require('./lib/emoji')
 const logger = require('./lib/logger')
 const validator = require('./lib/validator')
 const exchange = require('./lib/exchange')
+const navigation = require('./lib/navigation')
 const score = require('./lib/score')
 
 // Load in our .env file
@@ -88,7 +89,7 @@ async function run() {
 
     await sleep(2000)
 
-    logger.output("Bot is powering up. BEEP-BOOP! 🤖")
+    logger.output("HaulBot is powering up. BEEP-BOOP! 🤖")
 
     await calculateCargoBays()
 
@@ -184,7 +185,7 @@ async function runStep(step) {
     if(step.type === "TRADE") {
         await tradeBetween(step.from, step.to)
     } else if(step.type === "MOVE") {
-        await navigate(step.from, step.to)
+        await navigation.navigateBetweenExchanges(connection, step.from, step.to)
     } else if(step.type === "WALK_UP") {
         await exchange.walkUpStockpiles(connection)
     } else {
@@ -214,7 +215,7 @@ async function tradeBetween(planetA, planetB) {
     let planetAExc = await connection.send("di exchange")
     let planetAImpEx = parseExData(planetAExc)
 
-    await navigate(planetA, planetB)
+    await navigation.navigateBetweenExchanges(connection, planetA, planetB)
 
     // Gather info about planet B
     logger.output(`Scanning ${planetB} exchange.`)
@@ -237,13 +238,13 @@ async function tradeBetween(planetA, planetB) {
         logger.output(`No available routes from ${planetB} => ${planetA}`)
     }
 
-    await navigate(planetB, planetA)
+    await navigation.navigateBetweenExchanges(connection, planetB, planetA)
 
     while(routesAtoB.length > 0) {
         let commod = routesAtoB[0]
 
         await buyCommod(commod)
-        await navigate(planetA, planetB)
+        await navigation.navigateBetweenExchanges(connection, planetA, planetB)
         await sellCommod(commod)
 
         // Remove this from our list
@@ -255,7 +256,7 @@ async function tradeBetween(planetA, planetB) {
         if(returnLoad)
             await buyCommod(returnCommod)
 
-        await navigate(planetB, planetA)
+        await navigation.navigateBetweenExchanges(connection, planetB, planetA)
 
         if(returnLoad) {
             await sellCommod(returnCommod)
@@ -267,12 +268,12 @@ async function tradeBetween(planetA, planetB) {
 
     if(routesBtoA.length > 0) {
         while(routesBtoA.length > 0) {
-            navigate(planetA, planetB)
+            navigation.navigateBetweenExchanges(connection, planetA, planetB)
 
             let commod = routesBtoA[0]
 
             await buyCommod(commod)
-            await navigate(planetB, planetA)
+            await navigation.navigateBetweenExchanges(connection, planetB, planetA)
             await sellCommod(commod)
 
             routesBtoA = routesBtoA.slice(1)
@@ -327,40 +328,6 @@ async function checkStamina(planet) {
     }
 }
 
-/**
- * Navigates from the exchange on one planet to another
- * 
- * @param {String} from 
- * @param {String} to 
- */
-async function navigate(from, to) {
-    logger.output(chalk.blue("Moving from " + from + " to " + to + ". ") + "🚀")
-
-    let fromPlanet = planets[from]
-    let toPlanet = planets[to]
-
-    // Go from exchange => landing pad
-    for(let cmd of fromPlanet.fromExchange) {
-        await connection.send(cmd)
-    }
-
-    await connection.send("board")
-    
-    for(let cmd of fromPlanet.toLink) {
-        await connection.send(cmd)
-    }
-
-    for(let cmd of toPlanet.fromLink) {
-        await connection.send(cmd)
-    }
-
-    await connection.send("board")
-    
-    for(let cmd of toPlanet.toExchange) {
-        await connection.send(cmd)
-    }
-}
-
  /**
   * Fills our cargo bay with the specified commodity
   * 
@@ -390,6 +357,12 @@ async function sellCommod(commod) {
 
     const newBankBalance = await score.getBankBalance(connection)
     const profit = newBankBalance - lastBankBalance
+
+    if(profit < 0) {
+        logger.output(chalk.yellow("WARN! Money loss detected."))
+        logger.output(chalk.yellow("Balance before: " + lastBankBalance))
+        logger.output(chalk.yellow("Balnce after: " + newBankBalance))
+    }
 
     logger.output(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale. 🤑`)
 
