@@ -23,8 +23,8 @@ const STAMINA_MIN = 25
 
 // Information for connection to Fed2's servers
 const connectionParams = {
-    host: 'play.federation2.com',
-    port: 30003,
+    host: process.env.FED_HOST || 'play.federation2.com',
+    port: process.env.FED_PORT || 30003,
     negotiationMandatory: false
 }
 
