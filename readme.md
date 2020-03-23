@@ -28,8 +28,7 @@ Next, install the dependencies with ```npm install``` (or ```yarn install``` if 
 
 Your username and password data is loaded from a file named ```.env``` not present in the repository for security reasons. Either copy or rename ```template.env``` and edit it to contain your login information.
 
-Planet data is defined in ```planets.js``` and steps are defined in ```steps.js```. I've included my personal configuration for the Enso system as an 
-example to help understand how these files should be configured.
+Planet data is defined in ```planets.js``` and steps are defined in ```steps.js```. I've included my personal configuration for the Enso system as an example to help understand how these files should be configured.
 
 Now, finally, you can run the bot by typing ```npm start```.
 
