@@ -8,28 +8,8 @@
 
 const steps = [
     {
-        type: "TRADE",
-        from: "Sakura",
-        to: "Phoenix"
-    },
-    {
-        type: "TRADE",
-        from: "Sakura",
-        to: "Zen"
-    },
-    {
         type: "MOVE",
         from: "Sakura",
-        to: "Phoenix"
-    },
-    {
-        type: "TRADE",
-        from: "Phoenix",
-        to: "Zen"
-    },
-    {
-        type: "MOVE",
-        from: "Phoenix",
         to: "Zen"
     },
     {
@@ -39,7 +19,34 @@ const steps = [
         type: "MOVE",
         from: "Zen",
         to: "Sakura"
+    },
+
+    {
+        type: "TRADE",
+        from: "Sakura",
+        to: "Phoenix"
+    },
+    {
+        type: "TRADE",
+        from: "Sakura",
+        to: "Zen"
+    },
+    {
+        type: "MOVE",
+        from: "Sakura",
+        to: "Phoenix"
+    },
+    {
+        type: "TRADE",
+        from: "Phoenix",
+        to: "Zen"
+    },
+    {
+        type: "MOVE",
+        from: "Phoenix",
+        to: "Sakura"
     }
+    
 ]
 
 module.exports = steps
