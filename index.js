@@ -1,10 +1,12 @@
 const Telnet = require('telnet-client')
 const _ = require('lodash')
 const chalk = require('chalk')
+
 const emoji = require('./lib/emoji')
 const logger = require('./lib/logger')
 const validator = require('./lib/validator')
 const exchange = require('./lib/exchange')
+const score = require('./lib/score')
 
 // Load in our .env file
 require('dotenv').config()
@@ -378,7 +380,7 @@ async function navigate(from, to) {
   * @param {String} commod 
   */
 async function buyCommod(commod) {
-    lastBankBalance = await checkBankBalance()
+    lastBankBalance = await score.getBankBalance(connection)
 
     logger.output("Buying " + cargoBays + " bays of " + emoji.formatCommod(commod))
 
@@ -399,7 +401,7 @@ async function sellCommod(commod) {
         await connection.send("sell " + commod)
     }
 
-    const newBankBalance = await checkBankBalance()
+    const newBankBalance = await score.getBankBalance(connection)
     const profit = newBankBalance - lastBankBalance
 
     logger.output(`Personal profit of ${chalk.bold.white(profit)}ig made from the sale. 🤑`)
