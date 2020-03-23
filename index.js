@@ -82,6 +82,11 @@ async function run() {
         process.exit(0)
     }
 
+    connection.on('data', (data) => {
+        console.log(chalk.yellow("Data recieved"))
+        console.log(data.toString())
+    })
+
     // Authenticate the user
     await connection.send(process.env.FED_USERNAME)
     await connection.send(process.env.FED_PASSWORD)
@@ -130,19 +135,6 @@ async function checkCargoHold() {
         logger.output(chalk.red("ERROR! Cargo detected in hold."))
         process.exit(0)
     }
-}
-
-/**
- * Determine how much money is in our bank account
- */
-async function checkBankBalance() {
-    let score = await connection.send("sc")
-
-    let match = bankBalanceRegex.exec(score)
-
-    let balance = match[1].replace(/,/g, "")
-
-    return parseInt(balance)
 }
 
 /**
