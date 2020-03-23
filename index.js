@@ -82,11 +82,6 @@ async function run() {
         process.exit(0)
     }
 
-    connection.on('data', (data) => {
-        console.log(chalk.yellow("Data recieved"))
-        console.log(data.toString())
-    })
-
     // Authenticate the user
     await connection.send(process.env.FED_USERNAME)
     await connection.send(process.env.FED_PASSWORD)
