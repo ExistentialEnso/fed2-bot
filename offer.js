@@ -18,9 +18,6 @@ const DEFICIT_MAX = -400
 // What is the minimum cutoff to determine current commodity surpluses?
 const SURPLUS_MIN = 18500
 
-// How many minutes to sleep between each cycle?
-const SLEEP_MINUTES = 15
-
 // How low should stamina go before we buy food?
 const STAMINA_MIN = 25
 
