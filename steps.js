@@ -8,6 +8,19 @@
 
 const steps = [
     {
+        type: "MOVE",
+        from: "Sakura",
+        to: "Zen"
+    },
+    {
+        type: "WALK_UP"
+    },
+    {
+        type: "MOVE",
+        from: "Zen",
+        to: "Sakura"
+    },
+    {
         type: "HAUL_OUT",
         from: "Sakura"
     },

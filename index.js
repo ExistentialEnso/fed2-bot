@@ -252,10 +252,14 @@ async function haulOut(planet) {
 
         // TODO - not make this hardcoded
         if(exp === "LanzariK" || 
+            exp === "Lasers" || 
             exp === "Munitions" ||
+            exp === "Monopoles" || 
             exp === "LubOils" || 
+            exp === "Xmetals" ||
             exp === "Synths" ||
             exp === "Radioactives" || 
+            exp === "Electros" || 
             exp === "Musiks") {
             logger.output("Skipping " + exp + " due to a lack of reliable buyers in cartel.")
             continue
