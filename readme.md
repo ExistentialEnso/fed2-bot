@@ -35,8 +35,7 @@ Now, finally, you can run the bot by typing ```npm start```.
 ## Notes
 
 * Your character needs to be in the exchange of the first step's planet when beginning the bot
-* Steps must have a type, which must be one of: ```MOVE```, ```TRADE```, ```WALK_UP```
-* ```MOVE``` and ```TRADE``` steps require the following planet names: to, from
+* Steps must have a type, which must be one of: ```MOVE```, ```TRADE```, ```WALK_UP```, ```HAUL_OUT```
 * ```TRADE``` steps are two way: if the ```to``` planet has surpluses that are deficits on the ```from``` planet, they are hauled
 * ```TRADE``` steps put you back on the ```from``` planet when they finish
 * The last step should ensure you are back on the planet where the first step starts

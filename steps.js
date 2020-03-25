@@ -8,6 +8,35 @@
 
 const steps = [
     {
+        type: "HAUL_OUT",
+        from: "Sakura"
+    },
+    {
+        type: "MOVE",
+        from: "Sakura",
+        to: "Phoenix"
+    },
+    {
+        type: "HAUL_OUT",
+        from: "Phoenix"
+    },
+    {
+        type: "MOVE",
+        from: "Phoenix",
+        to: "Zen"
+    },
+    {
+        type: "HAUL_OUT",
+        from: "Zen"
+    },
+    {
+        type: "MOVE",
+        from: "Zen",
+        to: "Sakura"
+    },
+
+
+    /*{
         type: "MOVE",
         from: "Sakura",
         to: "Zen"
@@ -45,7 +74,7 @@ const steps = [
         type: "MOVE",
         from: "Phoenix",
         to: "Sakura"
-    }
+    }*/
     
 ]
 

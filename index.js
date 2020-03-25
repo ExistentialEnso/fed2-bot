@@ -188,8 +188,69 @@ async function runStep(step) {
         await navigation.navigateBetweenExchanges(connection, step.from, step.to)
     } else if(step.type === "WALK_UP") {
         await exchange.walkUpStockpiles(connection)
+    } else if(step.type === "HAUL_OUT") {
+        await haulOut(step.from)
     } else {
         logger.output(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
+    }
+}
+
+async function haulOut(planet) {
+    if(planets[planet].toRestaurant) {
+        await checkStamina(planet)
+    }
+
+    logger.output(chalk.blue(`Hauling out surpluses on: ${planet}`))
+
+    logger.output(`Scanning ${planet} exchange.`)
+    let exc = await connection.send("di exchange")
+    let planetImpEx = parseExData(exc)
+
+    for(let exp of planetImpEx.exp) {
+        await connection.send("buy fuel")
+
+        // TODO - not make this hardcoded
+        if(exp === "LanzariK" || 
+            exp === "Munitions" ||
+            exp === "LubOils" || 
+            exp === "Synths" ||
+            exp === "Musiks") {
+            logger.output("Skipping " + exp + " due to a lack of reliable buyers in cartel.")
+            continue
+        }
+
+        logger.output("Hauling out " + emoji.formatCommod(exp))
+
+        let bestBuyer = await exchange.findBestBuyer(connection, exp)
+
+        for(let i=0; i < 6; i++) {
+            await connection.send("buy " + exp)
+        }
+
+        await navigation.navigateBetweenExchanges(connection, planet, bestBuyer)
+
+        for(let i=0; i < 6; i++) {
+            await connection.send("sell " + exp)
+        }
+
+        let status = await connection.send("st")
+        let match = cargoSpaceRegex.exec(status)
+
+        if(match[1] !== match[2]) {
+            logger.output("Cargo still in hold, looking for 2nd buyer")
+
+            let secondBestBuyer = await exchange.findBestBuyer(connection, exp)
+
+            await navigation.navigateBetweenExchanges(connection, bestBuyer, secondBestBuyer)
+
+            for(let i=0; i < 6; i++) {
+                await connection.send("sell " + exp)
+            }
+
+            bestBuyer = secondBestBuyer
+        }
+
+        await navigation.navigateBetweenExchanges(connection, bestBuyer, planet)
     }
 }
 

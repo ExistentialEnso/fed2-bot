@@ -37,7 +37,65 @@ const planets = {
 
         toLink: ["nw"],
         fromLink: ["se"]
+    },
+
+    Faa: {
+        system: "Gov",
+
+        toExchange: ["s", "w"],
+        fromExchange: ["e", "n"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Guardian: {
+        system: "Fight",
+        
+        toExchange: ["sw"],
+        fromExchange: ["ne"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Cessna: {
+        system: "Flight",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: [],
+        fromLink: []
+    },
+    Diamond: {
+        system: "Flight",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: ["sw"],
+        fromLink: ["new"]
+    },
+    Piper: {
+        system: "Flight",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: ["w"],
+        fromLink: ["e"]
+    },
+    Cirrus: {
+        system: "Flight",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: ["e"],
+        fromLink: ["w"]
     }
+
 }
 
 module.exports = planets
