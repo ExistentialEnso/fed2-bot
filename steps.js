@@ -12,6 +12,10 @@ const steps = [
         from: "Sakura"
     },
     {
+        type: "HAUL_IN",
+        from: "Sakura"
+    },
+    {
         type: "MOVE",
         from: "Sakura",
         to: "Phoenix"
@@ -21,12 +25,20 @@ const steps = [
         from: "Phoenix"
     },
     {
+        type: "HAUL_IN",
+        from: "Phoenix"
+    },
+    {
         type: "MOVE",
         from: "Phoenix",
         to: "Zen"
     },
     {
         type: "HAUL_OUT",
+        from: "Zen"
+    },
+    {
+        type: "HAUL_IN",
         from: "Zen"
     },
     {

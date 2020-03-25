@@ -19,7 +19,7 @@ const DEFICIT_MAX = -500
 const SURPLUS_MIN = 19500
 
 // How many minutes to sleep between each cycle?
-const SLEEP_MINUTES = 15
+const SLEEP_MINUTES = 5
 
 // How low should stamina go before we buy food?
 const STAMINA_MIN = 25
@@ -190,8 +190,49 @@ async function runStep(step) {
         await exchange.walkUpStockpiles(connection)
     } else if(step.type === "HAUL_OUT") {
         await haulOut(step.from)
+    } else if(step.type === "HAUL_IN") {
+        await haulIn(step.from)
     } else {
         logger.output(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
+    }
+}
+
+async function haulIn(planet) {
+    if(planets[planet].toRestaurant) {
+        await checkStamina(planet)
+    }
+
+    logger.output(chalk.blue(`Hauling in deficits on: ${planet}`))
+
+    logger.output(`Scanning ${planet} exchange.`)
+    let exc = await connection.send("di exchange")
+    let planetImpEx = parseExData(exc)
+
+    for(let imp of planetImpEx.imp) {
+        if(planet === "Sakura") {
+            if(imp === "Vidicasters") {
+                console.log("Skipping Vidicasters because of factories on Sakura")
+                return
+            }
+        }
+
+        await connection.send("buy fuel")
+
+        logger.output("Hauling in " + emoji.formatCommod(imp))
+
+        let bestSeller = await exchange.findBestSeller(connection, imp)
+
+        await navigation.navigateBetweenExchanges(connection, planet, bestSeller)
+
+        for(let i=0; i < 5; i++) {
+            await connection.send("buy " + imp)
+        }
+
+        await navigation.navigateBetweenExchanges(connection, bestSeller, planet)
+
+        for(let i=0; i < 5; i++) {
+            await connection.send("sell " + imp)
+        }
     }
 }
 
@@ -214,6 +255,7 @@ async function haulOut(planet) {
             exp === "Munitions" ||
             exp === "LubOils" || 
             exp === "Synths" ||
+            exp === "Radioactives" || 
             exp === "Musiks") {
             logger.output("Skipping " + exp + " due to a lack of reliable buyers in cartel.")
             continue

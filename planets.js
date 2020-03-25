@@ -75,7 +75,7 @@ const planets = {
         fromExchange: ["w"],
 
         toLink: ["sw"],
-        fromLink: ["new"]
+        fromLink: ["nw"]
     },
     Piper: {
         system: "Flight",
