@@ -86,6 +86,15 @@ const planets = {
         toLink: ["w"],
         fromLink: ["e"]
     },
+    Paper: {
+        system: "Flight",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: ["n"],
+        fromLink: ["s"]
+    },
     Cirrus: {
         system: "Flight",
 
@@ -94,8 +103,77 @@ const planets = {
 
         toLink: ["e"],
         fromLink: ["w"]
-    }
+    },
 
+    Oudars: {
+        system: "The Star Galaxy",
+
+        toExchange: ["s", "w"],
+        fromExchange: ["e", "n"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Memory: {
+        system: "Trial",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Olympus: {
+        system: "Mythic",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Romulus: {
+        system: "Rihansu",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Starbase: {
+        system: "Tinkle",
+
+        toExchange: ["e"],
+        fromExchange: ["w"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Tennica: {
+        system: "Vee",
+
+        toExchange: ["s", "w"],
+        fromExchange: ["e", "n"],
+
+        toLink: [],
+        fromLink: []
+    },
+
+    Sierra: {
+        system: "Wyld",
+
+        toExchange: ["s", "w"],
+        fromExchange: ["e", "n"],
+
+        toLink: [],
+        fromLink: []
+    }
 }
 
 module.exports = planets

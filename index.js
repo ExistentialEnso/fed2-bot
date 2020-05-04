@@ -34,7 +34,6 @@ const connectionParams = {
 // Useful regexes for pulling out data from game output
 let commodRegex = new RegExp("([A-Z,a-z]*): value ([0-9]*)ig/ton  Spread: ([0-9]*)%   Stock: current ([-0-9]*)")
 let staminaRegex = new RegExp("Stamina      max:  ([0-9]*) current:  ([0-9]*)")
-let bankBalanceRegex = new RegExp("([0-9,\,]*)ig")
 let cargoSpaceRegex = new RegExp("Cargo space:    ([0-9]*)/([0-9]*)")
 let currentPlanetRegex = new RegExp("You are currently on ([A-Z,a-z,0-9]*) in the")
 
@@ -64,8 +63,12 @@ function sleep(ms) {
  */
 async function run() {
     logger.output("Validating step & planet data for errors...")
-    const stepsValid = validator.validateSteps(steps)
     const planetValid = validator.validatePlanets(planets)
+
+    let stepsValid = true
+    for(let stepSet of steps) {
+        stepsValid = validator.validateSteps(stepSet) && stepsValid
+    }
 
     if(!planetValid || !stepsValid) {
         logger.output(chalk.red("Please fix the errors with your configuration and run again."))
@@ -191,6 +194,7 @@ async function runStep(step) {
     } else if(step.type === "HAUL_OUT") {
         await haulOut(step.from)
     } else if(step.type === "HAUL_IN") {
+        //await exchange.setProtectiveStockpiles(connection)
         await haulIn(step.from)
     } else {
         logger.output(chalk.red(`Invalid step type: ${step.type}. Skipping.`))
@@ -224,13 +228,13 @@ async function haulIn(planet) {
 
         await navigation.navigateBetweenExchanges(connection, planet, bestSeller)
 
-        for(let i=0; i < 5; i++) {
+        for(let i=0; i < 6; i++) {
             await connection.send("buy " + imp)
         }
 
         await navigation.navigateBetweenExchanges(connection, bestSeller, planet)
 
-        for(let i=0; i < 5; i++) {
+        for(let i=0; i < 6; i++) {
             await connection.send("sell " + imp)
         }
     }
@@ -258,6 +262,7 @@ async function haulOut(planet) {
             exp === "LubOils" || 
             exp === "Xmetals" ||
             exp === "Synths" ||
+            exp === "Nickel" || 
             exp === "Radioactives" || 
             exp === "Electros" || 
             exp === "Musiks") {
